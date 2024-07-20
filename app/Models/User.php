@@ -69,5 +69,10 @@ class User extends Authenticatable
         return $this->hasOne(Translator::class);
     }
 
+    public function client()
+    {
+        return $this->hasOne(Client::class);
+    }
+
 
 }

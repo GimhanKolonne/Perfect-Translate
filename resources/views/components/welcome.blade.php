@@ -6,31 +6,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Perfect Translate</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 </head>
-<body class="bg-white text-gray-900">
+<body class="bg-gray-100 text-gray-900 font-sans">
 
 <!-- Hero Section -->
-<section class="bg-cover bg-center h-screen" style="background-image: url('{{ URL('Images/Perfect Translate.png') }}');">
-    <div class="flex items-center justify-center h-full bg-gray-900 bg-opacity-50">
+<section class="bg-cover bg-center h-screen relative" style="background-image: url('{{ URL('Images/Perfect Translate.png') }}');">
+    <div class="absolute inset-0 bg-black opacity-50"></div>
+    <div class="relative z-10 flex items-center justify-center h-full">
         <div class="text-center">
             <!-- Logo -->
-            <div class="mb-6">
+            <div class="mb-8">
                 <img src="{{ URL('Images/Black Oranye Archetype Inspired Logo.png') }}" alt="Logo" class="mx-auto h-40 w-auto">
             </div>
 
-            <h1 class="text-4xl text-black">Perfect Place For Perfect Translation</h1>
-            <p class="mt-4 text-black">Join the Sri Lankan marketplace to access top-notch translation services.</p>
+            <h1 class="text-5xl font-bold text-white mb-4">Perfect Place For Perfect Translation</h1>
+            <p class="mt-4 text-xl text-white mb-8">Join the Sri Lankan marketplace to access top-notch translation services.</p>
             <div class="mt-6">
                 @auth
-                    @if(auth()->user()->role !== 'translator')
-                        <a href="{{ route('translators.create') }}" class="bg-black text-white py-2 px-4 rounded hover:bg-purple-500">Become a translator</a>
-
+                    @if(auth()->user()->role !== 'translator' && auth()->user()->role !== 'client')
+                        <a href="{{ route('translators.create') }}" class="bg-purple-600 text-white py-3 px-6 rounded-full text-lg font-semibold hover:bg-purple-700 transition duration-300">Become a translator</a>
+                        <a href="{{ route('clients.create') }}" class="bg-purple-600 text-white py-3 px-6 rounded-full text-lg font-semibold hover:bg-purple-700 transition duration-300">Become a client</a>
                     @endif
 
                 @endauth
                 @guest
-                    <a href="{{ route('register') }}" class="bg-black text-white py-2 px-4 rounded hover:bg-purple-500">Get Started</a>
-                    <a href="{{ route('login') }}" class="bg-black text-white py-2 px-4 rounded ml-4 hover:bg-purple-500">Log In</a>
+                    <a href="{{ route('register') }}" class="bg-purple-600 text-white py-3 px-6 rounded-full text-lg font-semibold hover:bg-purple-700 transition duration-300">Get Started</a>
+                    <a href="{{ route('login') }}" class="bg-transparent border-2 border-white text-white py-3 px-6 rounded-full text-lg font-semibold ml-4 hover:bg-white hover:text-purple-600 transition duration-300">Log In</a>
                 @endguest
             </div>
         </div>
@@ -38,29 +40,29 @@
 </section>
 
 <!-- How It Works Section -->
-<section id="how-it-works" class="py-16">
-    <div class="container mx-auto px-6">
-        <h2 class="text-3xl font-bold text-center text-gray-800">How It Works</h2>
-        <div class="mt-8 flex flex-wrap justify-around">
-            <div class="w-full md:w-1/3 p-4">
-                <div class="bg-white shadow rounded-lg p-6 text-center">
-                    <img src="" class="mx-auto mb-4" alt="Post Your Job">
-                    <h3 class="text-xl font-semibold">Post Your Job</h3>
-                    <p class="mt-2 text-gray-600">nabeel add text</p>
+<section id="how-it-works" class="py-20 bg-white">
+    <div class="container mx-auto px-4">
+        <h2 class="text-4xl font-bold text-center text-gray-800 mb-12">How It Works</h2>
+        <div class="flex flex-wrap -mx-4">
+            <div class="w-full md:w-1/3 px-4 mb-8">
+                <div class="bg-gray-100 rounded-lg p-8 h-full shadow-lg hover:shadow-xl transition duration-300">
+                    <img src="" class="mx-auto mb-6 w-16 h-16" alt="Post Your Job">
+                    <h3 class="text-2xl font-semibold mb-4">Post Your Job</h3>
+                    <p class="text-gray-600">nabeel add text</p>
                 </div>
             </div>
-            <div class="w-full md:w-1/3 p-4">
-                <div class="bg-white shadow rounded-lg p-6 text-center">
-                    <img src="" class="mx-auto mb-4" alt="Review Applications From Translators">
-                    <h3 class="text-xl font-semibold">Review Applications From Translators</h3>
-                    <p class="mt-2 text-gray-600">nabeel add text</p>
+            <div class="w-full md:w-1/3 px-4 mb-8">
+                <div class="bg-gray-100 rounded-lg p-8 h-full shadow-lg hover:shadow-xl transition duration-300">
+                    <img src="" class="mx-auto mb-6 w-16 h-16" alt="Review Applications From Translators">
+                    <h3 class="text-2xl font-semibold mb-4">Review Applications From Translators</h3>
+                    <p class="text-gray-600">nabeel add text</p>
                 </div>
             </div>
-            <div class="w-full md:w-1/3 p-4">
-                <div class="bg-white shadow rounded-lg p-6 text-center">
-                    <img src="" class="mx-auto mb-4" alt="Hire and Get Translated">
-                    <h3 class="text-xl font-semibold">Hire and Get Translated</h3>
-                    <p class="mt-2 text-gray-600">nabeel add text</p>
+            <div class="w-full md:w-1/3 px-4 mb-8">
+                <div class="bg-gray-100 rounded-lg p-8 h-full shadow-lg hover:shadow-xl transition duration-300">
+                    <img src="" class="mx-auto mb-6 w-16 h-16" alt="Hire and Get Translated">
+                    <h3 class="text-2xl font-semibold mb-4">Hire and Get Translated</h3>
+                    <p class="text-gray-600">nabeel add text</p>
                 </div>
             </div>
         </div>
@@ -68,29 +70,29 @@
 </section>
 
 <!-- Services Section -->
-<section id="services" class="py-16">
-    <div class="container mx-auto px-6">
-        <h2 class="text-3xl font-bold text-center text-gray-800">Our Services</h2>
-        <div class="mt-8 flex flex-wrap justify-around">
-            <div class="w-full md:w-1/3 p-4">
-                <div class="bg-white shadow rounded-lg p-6 text-center">
-                    <img src="" class="mx-auto mb-4" alt="Document Translation">
-                    <h3 class="text-xl font-semibold">Document Translation</h3>
-                    <p class="mt-2 text-gray-600">nabeel add text</p>
+<section id="services" class="py-20 bg-white">
+    <div class="container mx-auto px-4">
+        <h2 class="text-4xl font-bold text-center text-gray-800 mb-12">Our Services</h2>
+        <div class="flex flex-wrap -mx-4">
+            <div class="w-full md:w-1/3 px-4 mb-8">
+                <div class="bg-gray-100 rounded-lg p-8 h-full shadow-lg hover:shadow-xl transition duration-300">
+                    <img src="" class="mx-auto mb-6 w-16 h-16" alt="Document Translation">
+                    <h3 class="text-2xl font-semibold mb-4">Document Translation</h3>
+                    <p class="text-gray-600">nabeel add text</p>
                 </div>
             </div>
-            <div class="w-full md:w-1/3 p-4">
-                <div class="bg-white shadow rounded-lg p-6 text-center">
-                    <img src="" class="mx-auto mb-4" alt="Website Translation">
-                    <h3 class="text-xl font-semibold">Website Translation</h3>
-                    <p class="mt-2 text-gray-600">nabeel add text</p>
+            <div class="w-full md:w-1/3 px-4 mb-8">
+                <div class="bg-gray-100 rounded-lg p-8 h-full shadow-lg hover:shadow-xl transition duration-300">
+                    <img src="" class="mx-auto mb-6 w-16 h-16" alt="Website Translation">
+                    <h3 class="text-2xl font-semibold mb-4">Website Translation</h3>
+                    <p class="text-gray-600">nabeel add text</p>
                 </div>
             </div>
-            <div class="w-full md:w-1/3 p-4">
-                <div class="bg-white shadow rounded-lg p-6 text-center">
-                    <img src="" class="mx-auto mb-4" alt="Localization Services">
-                    <h3 class="text-xl font-semibold">Localization Services</h3>
-                    <p class="mt-2 text-gray-600">nabeel add text</p>
+            <div class="w-full md:w-1/3 px-4 mb-8">
+                <div class="bg-gray-100 rounded-lg p-8 h-full shadow-lg hover:shadow-xl transition duration-300">
+                    <img src="" class="mx-auto mb-6 w-16 h-16" alt="Localization Services">
+                    <h3 class="text-2xl font-semibold mb-4">Localization Services</h3>
+                    <p class="text-gray-600">nabeel add text</p>
                 </div>
             </div>
         </div>
@@ -98,21 +100,21 @@
 </section>
 
 <!-- Footer -->
-<footer class="bg-gray-800 text-white py-8">
-    <div class="container mx-auto px-6">
-        <div class="flex justify-between">
-            <div>
-                <h3 class="font-bold text-lg">Perfect Translate</h3>
-                <p class="mt-2 text-gray-400">Perfect Place For Perfect Translation</p>
+<footer class="bg-gray-800 text-white py-12">
+    <div class="container mx-auto px-4">
+        <div class="flex flex-wrap justify-between">
+            <div class="w-full md:w-1/3 mb-8 md:mb-0">
+                <h3 class="font-bold text-2xl mb-4">Perfect Translate</h3>
+                <p class="text-gray-400">Perfect Place For Perfect Translation</p>
             </div>
-            <div>
-                <nav class="space-x-6">
-                    <a href="/" class="text-gray-400 hover:text-white">Home</a>
-                    <a href="#how-it-works" class="text-gray-400 hover:text-white">How It Works</a>
-                    <a href="#services" class="text-gray-400 hover:text-white">Services</a>
-                    <a href="{{ route('login') }}" class="text-gray-400 hover:text-white">Log in</a>
+            <div class="w-full md:w-1/3">
+                <nav class="flex flex-wrap justify-center md:justify-end">
+                    <a href="/" class="text-gray-400 hover:text-white mr-6 mb-4">Home</a>
+                    <a href="#how-it-works" class="text-gray-400 hover:text-white mr-6 mb-4">How It Works</a>
+                    <a href="#services" class="text-gray-400 hover:text-white mr-6 mb-4">Services</a>
+                    <a href="{{ route('login') }}" class="text-gray-400 hover:text-white mr-6 mb-4">Log in</a>
                     @if (Route::has('register'))
-                        <a href="{{ route('register') }}" class="text-gray-400 hover:text-white">Register</a>
+                        <a href="{{ route('register') }}" class="text-gray-400 hover:text-white mb-4">Register</a>
                     @endif
                 </nav>
             </div>

@@ -25,7 +25,7 @@ class TranslatorController extends Controller
         // Get the validated data
         $validated = $request->validated();
 
-        // Create the slug from the bio or another suitable field
+
         $validated['slug'] = \Str::slug($validated['bio']);
 
         // Serialize arrays
@@ -85,7 +85,7 @@ class TranslatorController extends Controller
 
         $translator->update($validated);
 
-        return redirect()->route('home')
+        return redirect()->route('translators.show', $translator)
             ->with('flash.banner', 'Profile updated successfully');
     }
 

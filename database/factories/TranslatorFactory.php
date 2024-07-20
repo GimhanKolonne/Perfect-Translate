@@ -26,7 +26,6 @@ class TranslatorFactory extends Factory
             'availability' => $this->faker->word,
             'bio' => $this->faker->text,
             'slug' => $this->faker->unique()->word,
-            'status' => $this->faker->boolean,
             'user_id' => \App\Models\User::factory(),
         ];
     }

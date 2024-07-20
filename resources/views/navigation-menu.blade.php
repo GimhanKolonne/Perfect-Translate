@@ -17,6 +17,10 @@
                             <x-nav-link href="{{ route('translators.show', auth()->user()->translator) }}" :active="request()->routeIs('translators.show')">
                                 {{ __('View Profile') }}
                             </x-nav-link>
+                        @elseif(auth()->user()->role === 'client')
+                            <x-nav-link href="{{ route('clients.show', auth()->user()->client) }}" :active="request()->routeIs('clients.show')">
+                                {{ __('View Profile') }}
+                            </x-nav-link>
                         @endif
                         <x-nav-link href="{{ route('home') }}" :active="request()->routeIs('home')">
                             {{ __('Find Work') }}

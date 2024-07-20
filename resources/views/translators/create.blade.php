@@ -8,7 +8,7 @@
             <form action="{{ route('translators.store') }}" method="POST" enctype="multipart/form-data" class="p-6 sm:p-8">
                 @csrf
                 <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
-                <!-- Other form fields go here -->
+
                 <div class="grid md:grid-cols-2 gap-6">
                     <!-- Expertise Section -->
                     <div>
