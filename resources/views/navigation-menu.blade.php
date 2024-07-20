@@ -13,9 +13,11 @@
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8  sm:ms-10 sm:flex">
                     @auth
-                        <x-nav-link href="{{ route('home') }}" :active="request()->routeIs('home')">
-                            {{ __('Profile') }}
-                        </x-nav-link>
+                        @if(auth()->user()->role === 'translator')
+                            <x-nav-link href="{{ route('translators.show', auth()->user()->translator) }}" :active="request()->routeIs('translators.show')">
+                                {{ __('View Profile') }}
+                            </x-nav-link>
+                        @endif
                         <x-nav-link href="{{ route('home') }}" :active="request()->routeIs('home')">
                             {{ __('Find Work') }}
                         </x-nav-link>
@@ -27,9 +29,9 @@
                             {{ __('Find Clients') }}
                         </x-nav-link>
                     @endauth
-                    <x-nav-link href="{{ route('home') }}" :active="request()->routeIs('home')">
-                        {{ __('Home') }}
-                    </x-nav-link>
+                        <x-nav-link href="{{ route('home') }}" :active="request()->routeIs('home')">
+                            {{ __('Home') }}
+                        </x-nav-link>
                 </div>
             </div>
 

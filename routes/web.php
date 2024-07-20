@@ -11,6 +11,11 @@ Route::get('/', function () {
 
 
 
+Route::resource('translators', TranslatorController::class)
+    ->middleware('auth');
+
+
+
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),

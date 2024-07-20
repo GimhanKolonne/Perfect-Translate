@@ -11,7 +11,7 @@ class StoreTranslatorRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -19,10 +19,19 @@ class StoreTranslatorRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-    public function rules(): array
+    public function rules()
     {
         return [
-            //
+            'user_id' => 'required|exists:users,id',
+            'type_of_translator' => 'required|array',
+            'type_of_translator.*' => 'string',
+            'language_pairs' => 'required|array',
+            'language_pairs.*' => 'string',
+            'years_of_experience' => 'required|integer|min:0',
+            'rate_per_word' => 'required|numeric|min:0',
+            'rate_per_hour' => 'required|numeric|min:0',
+            'availability' => 'required|string',
+            'bio' => 'required|string',
         ];
     }
 }

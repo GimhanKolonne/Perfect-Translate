@@ -22,8 +22,8 @@
             <p class="mt-4 text-black">Join the Sri Lankan marketplace to access top-notch translation services.</p>
             <div class="mt-6">
                 @auth
-                    @if(auth()->user()->role !== 'translators')
-                        <a href="{{ route('profile.show') }}" class="bg-black text-white py-2 px-4 rounded hover:bg-purple-500">Become a translator</a>
+                    @if(auth()->user()->role !== 'translator')
+                        <a href="{{ route('translators.create') }}" class="bg-black text-white py-2 px-4 rounded hover:bg-purple-500">Become a translator</a>
 
                     @endif
 

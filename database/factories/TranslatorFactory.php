@@ -25,10 +25,9 @@ class TranslatorFactory extends Factory
             'rate_per_hour' => $this->faker->randomFloat(2, 0, 999999.99),
             'availability' => $this->faker->word,
             'bio' => $this->faker->text,
-            'is_verified' => $this->faker->boolean,
             'slug' => $this->faker->unique()->word,
             'status' => $this->faker->boolean,
-            'user_id' => \App\Models\User::factory()
+            'user_id' => \App\Models\User::factory(),
         ];
     }
 }

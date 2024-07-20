@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Translator extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'type_of_translator',
         'language_pairs',
@@ -16,14 +17,22 @@ class Translator extends Model
         'rate_per_hour',
         'availability',
         'bio',
-        'is_verified',
         'slug',
         'status',
-        'user_id'
+        'user_id',
     ];
+    protected $casts = [
+        'type_of_translator' => 'array',
+        'language_pairs' => 'array',
+    ];
+
+
 
     public function user()
     {
         return $this->belongsTo(User::class);
     }
+
+
 }
+

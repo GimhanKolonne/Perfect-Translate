@@ -6,23 +6,23 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up(): void
+    public function up()
     {
         Schema::create('translators', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->unique()->constrained()->onDelete('cascade');
-            $table->string('type_of_translator')->nullable();
-            $table->string('language_pairs')->nullable();
-            $table->integer('years_of_experience')->nullable();
-            $table->decimal('rate_per_word', 8, 2)->nullable();
-            $table->decimal('rate_per_hour', 8, 2)->nullable();
-            $table->string('availability')->nullable();
-            $table->text('bio')->nullable();
-            $table->boolean('is_verified')->default(false);
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->integer('years_of_experience');
+            $table->decimal('rate_per_word', 8, 2);
+            $table->decimal('rate_per_hour', 8, 2);
+            $table->string('availability');
+            $table->text('bio');
+            $table->text('type_of_translator');
+            $table->text('language_pairs');
             $table->string('slug')->unique();
             $table->timestamps();
         });
     }
+
 
     public function down(): void
     {
