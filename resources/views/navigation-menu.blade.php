@@ -26,7 +26,7 @@
                             {{ __('Find Work') }}
                         </x-nav-link>
 
-                        <x-nav-link href="{{ route('home') }}" :active="request()->routeIs('home')">
+                        <x-nav-link href="{{ route('translators.index') }}" :active="request()->routeIs('translators.index')">
                             {{ __('Find Translators') }}
                         </x-nav-link>
                         <x-nav-link href="{{ route('home') }}" :active="request()->routeIs('home')">

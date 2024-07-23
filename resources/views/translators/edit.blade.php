@@ -1,7 +1,7 @@
 <x-app-layout>
     <div class="bg-gray-100 min-h-screen py-12 px-4 sm:px-6 lg:px-8">
         <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-xl overflow-hidden">
-            <div class="bg-gradient-to-r from-blue-500 to-indigo-600 p-6">
+            <div class="bg-gradient-to-r from-purple-400 to-purple-600 p-6">
                 <h1 class="text-3xl font-bold text-white text-center">Edit Your Translator Profile</h1>
             </div>
 
@@ -97,7 +97,7 @@
                 </div>
 
                 <div class="mt-8 flex justify-center">
-                    <button type="submit" class="px-4 py-2 bg-blue-500 text-black font-medium rounded-md border-2 border-blue-700 shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-300">
+                    <button type="submit" class="px-4 py-2 bg-gradient-to-r from-purple-400 to-purple-600 text-black font-medium rounded-md border-2  shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-300">
                         Update Your Profile
                     </button>
                 </div>

@@ -1,76 +1,89 @@
 <x-app-layout>
-    <div class="bg-gray-100 min-h-screen py-12 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-xl overflow-hidden">
-            <div class="bg-gradient-to-r from-blue-500 to-indigo-600 p-6">
-                <h1 class="text-3xl font-bold text-white text-center">Client Profile</h1>
-            </div>
+    <div class="py-12 bg-gray-100">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden sm:rounded-lg">
 
-            <!-- Profile Photo and Name Section -->
-            <div class="bg-white p-6 flex items-center justify-center flex-col">
-                <div class="w-20 h-20 rounded-full overflow-hidden">
-                    <img src="{{ $client->user->profile_photo_url }}" alt="{{ $client->user->name }}" class="w-full h-full object-cover">
-                </div>
-                <h2 class="mt-4 text-2xl font-semibold text-gray-800">{{ $client->user->name }}</h2>
-            </div>
+                    <div class="bg-white rounded-lg p-6">
+                        <x-form-section submit="updateProfileInformation">
+                            <x-slot name="title">
+                                <span class="text-2xl text-gray-800">{{ __('Client Information') }}</span>
+                            </x-slot>
 
-            <div class="p-6 sm:p-8">
-                <div class="grid md:grid-cols-2 gap-6">
-                    <!-- Company Details Section -->
-                    <div>
-                        <h2 class="text-xl font-semibold mb-3 text-gray-800 pb-4">Company Details</h2>
+                            <x-slot name="description">
+                                <!-- Description can go here if needed -->
+                            </x-slot>
 
-                        <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700 mb-1 pb-4">Company Name</label>
-                            <p class="mt-1 block w-full rounded-md border-gray-300 bg-gray-50 py-2 px-3">{{ $client->company_name }}</p>
-                        </div>
+                            <x-slot name="form">
+                                <!-- Profile Photo -->
+                                <div class="col-span-6 sm:col-span-4">
+                                    <x-label for="photo" value="{{ __('Profile Photo') }}" class="text-lg text-gray-700" />
+                                    <div class="mt-2 flex justify-center">
+                                        <img src="{{ $client->user->profile_photo_url }}" alt="{{ $client->user->name }}" class="rounded-full h-32 w-32 object-cover border-4 border-white">
+                                    </div>
+                                </div>
 
-                        <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700 mb-1 pb-4">Contact Name</label>
-                            <p class="mt-1 block w-full rounded-md border-gray-300 bg-gray-50 py-2 px-3">{{ $client->contact_name }}</p>
-                        </div>
+                                <!-- Name -->
+                                <div class="col-span-6 sm:col-span-4 mt-6">
+                                    <x-label for="name" value="{{ __('Name') }}" class="text-gray-700" />
+                                    <x-input id="name" type="text" class="mt-1 block w-full bg-gray-50" value="{{ $client->user->name }}" disabled />
+                                </div>
 
-                        <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700 mb-1 pb-4">Contact Phone</label>
-                            <p class="mt-1 block w-full rounded-md border-gray-300 bg-gray-50 py-2 px-3">{{ $client->contact_phone }}</p>
-                        </div>
+                                <!-- Email -->
+                                <div class="col-span-6 sm:col-span-4 mt-4">
+                                    <x-label for="email" value="{{ __('Email') }}" class="text-gray-700" />
+                                    <x-input id="email" type="email" class="mt-1 block w-full bg-gray-50" value="{{ $client->user->email }}" disabled />
+                                </div>
 
-                        <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700 mb-1 pb-4">Company Address</label>
-                            <p class="mt-1 block w-full rounded-md border-gray-300 bg-gray-50 py-2 px-3">{{ $client->company_address }}</p>
-                        </div>
+                                <!-- Company Details Section -->
+                                <div class="col-span-6 sm:col-span-4 mt-6">
+                                    <h3 class="text-lg font-medium text-gray-700 mb-4">{{ __('Company Details') }}</h3>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div>
+                                            <x-label value="{{ __('Company Name') }}" class="text-gray-700" />
+                                            <x-input type="text" class="mt-1 block w-full bg-gray-50" value="{{ $client->company_name }}" disabled />
+                                        </div>
+                                        <div>
+                                            <x-label value="{{ __('Contact Name') }}" class="text-gray-700" />
+                                            <x-input type="text" class="mt-1 block w-full bg-gray-50" value="{{ $client->contact_name }}" disabled />
+                                        </div>
+                                        <div>
+                                            <x-label value="{{ __('Contact Phone') }}" class="text-gray-700" />
+                                            <x-input type="text" class="mt-1 block w-full bg-gray-50" value="{{ $client->contact_phone }}" disabled />
+                                        </div>
+                                        <div>
+                                            <x-label value="{{ __('Company Address') }}" class="text-gray-700" />
+                                            <x-input type="text" class="mt-1 block w-full bg-gray-50" value="{{ $client->company_address }}" disabled />
+                                        </div>
+                                        <div>
+                                            <x-label value="{{ __('Country') }}" class="text-gray-700" />
+                                            <x-input type="text" class="mt-1 block w-full bg-gray-50" value="{{ $client->country }}" disabled />
+                                        </div>
+                                        <div>
+                                            <x-label value="{{ __('Website') }}" class="text-gray-700" />
+                                            <x-input type="text" class="mt-1 block w-full bg-gray-50" value="{{ $client->website }}" disabled />
+                                        </div>
+                                        <div>
+                                            <x-label value="{{ __('Industry') }}" class="text-gray-700" />
+                                            <x-input type="text" class="mt-1 block w-full bg-gray-50" value="{{ $client->industry }}" disabled />
+                                        </div>
+                                    </div>
+                                </div>
 
-                        <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700 mb-1 pb-4">Country</label>
-                            <p class="mt-1 block w-full rounded-md border-gray-300 bg-gray-50 py-2 px-3">{{ $client->country }}</p>
-                        </div>
+                                <!-- About You Section -->
+                                <div class="col-span-6 sm:col-span-4 mt-6">
+                                    <x-label value="{{ __('Bio') }}" class="text-lg text-gray-700 mb-2" />
+                                    <textarea class="mt-1 block w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md bg-gray-50" rows="4" disabled>{{ $client->bio }}</textarea>
+                                </div>
+                            </x-slot>
+                        </x-form-section>
 
-                        <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700 mb-1 pb-4">Website</label>
-                            <p class="mt-1 block w-full rounded-md border-gray-300 bg-gray-50 py-2 px-3">{{ $client->website }}</p>
-                        </div>
-
-                        <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700 mb-1 pb-4">Industry</label>
-                            <p class="mt-1 block w-full rounded-md border-gray-300 bg-gray-50 py-2 px-3">{{ $client->industry }}</p>
+                        <!-- Edit Button -->
+                        <div class="mt-8 flex justify-center">
+                            <a href="{{ route('clients.edit', $client) }}" class="px-6 py-3 bg-gradient-to-r from-purple-400 to-purple-600 text-white font-medium rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-300">
+                                Edit Profile
+                            </a>
                         </div>
                     </div>
-
-                    <!-- About You Section -->
-                    <div>
-                        <h2 class="text-xl font-semibold mb-3 text-gray-800 pb-4">About You</h2>
-
-                        <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700 mb-1 pb-4">Bio</label>
-                            <p class="mt-1 block w-full rounded-md border-gray-300 bg-gray-50 py-2 px-3">{{ $client->bio }}</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Edit Button -->
-                <div class="mt-8 flex justify-center">
-                    <a href="{{ route('clients.edit', $client) }}" class="px-4 py-2 bg-blue-500 text-black font-medium rounded-md border-2 border-blue-700 shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-300">
-                        Edit Profile
-                    </a>
                 </div>
             </div>
         </div>

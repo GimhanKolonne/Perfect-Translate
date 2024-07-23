@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CertificationController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\TranslatorController;
 
@@ -11,13 +12,11 @@ Route::get('/', function () {
 })->name('home');
 
 
-
 Route::resource('translators', TranslatorController::class)
-    ->middleware('auth');
+    ->middleware(['auth', 'verified']);
 
 Route::resource('clients', ClientController::class)
-    ->middleware('auth');
-
+    ->middleware(['auth', 'verified']);
 
 
 Route::middleware([

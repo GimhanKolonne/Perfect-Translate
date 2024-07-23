@@ -1,90 +1,107 @@
 <x-app-layout>
-    <div class="bg-gray-100 min-h-screen py-12 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-xl overflow-hidden">
-            <div class="bg-gradient-to-r from-blue-500 to-indigo-600 p-6">
-                <h1 class="text-3xl font-bold text-white text-center">Translator Profile</h1>
-            </div>
+    <div class="py-12 bg-gray-100">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden sm:rounded-lg">
 
-            <!-- Profile Photo and Name Section -->
+                    <div class="bg-white rounded-lg p-6">
+                        <x-form-section submit="updateProfileInformation">
+                            <x-slot name="title">
+                                <span class="text-2xl text-gray-800">{{ __('Translator Information') }}</span>
+                            </x-slot>
 
-            <div class="bg-white p-6 flex items-center justify-center flex-col">
-                <div class="w-20 h-20 rounded-full overflow-hidden">
-                    <img src="{{ $translator->user->profile_photo_url }}" alt="{{ $translator->user->name }}" class="w-full h-full object-cover">
-                </div>
-                <h2 class="mt-4 text-2xl font-semibold text-gray-800">{{ $translator->user->name }}</h2>
-            </div>
+                            <x-slot name="description">
+                                <!-- Description can go here if needed -->
+                            </x-slot>
 
-            <div class="p-6 sm:p-8">
-                <div class="grid md:grid-cols-2 gap-6">
-                    <!-- Expertise Section -->
-                    <div>
-                        <div class="mb-6">
-                            <h2 class="text-xl font-semibold mb-3 text-gray-800 pb-4">Expertise</h2>
-                            <label class="block text-sm font-medium text-gray-700 mb-2 pb-4">Types of Translation:</label>
-                            <div class="grid grid-cols-2 gap-2">
-                                @foreach(json_decode($translator->type_of_translator) as $type)
-                                    <div class="flex items-center">
-                                        <span class="inline-block bg-blue-100 text-blue-800 rounded-full px-3 py-1 text-sm font-semibold mr-2 mb-2">{{ $type }}</span>
+                            <x-slot name="form">
+                                <!-- Profile Photo -->
+                                <div class="col-span-6 sm:col-span-4">
+                                    <x-label for="photo" value="{{ __('Profile Photo') }}" class="text-lg text-gray-700" />
+                                    <div class="mt-2 flex justify-center">
+                                        <img src="{{ $translator->user->profile_photo_url }}" alt="{{ $translator->user->name }}" class="rounded-full h-32 w-32 object-cover border-4 border-white">
                                     </div>
-                                @endforeach
-                            </div>
-                        </div>
+                                </div>
 
-                        <div class="mb-6">
-                            <h2 class="text-xl font-semibold mb-3 text-gray-800 pb-4">Language Skills</h2>
-                            <label class="block text-sm font-medium text-gray-700 mb-2 pb-4">Language Pairs:</label>
-                            <div class="grid grid-cols-2 gap-2">
-                                @foreach(json_decode($translator->language_pairs) as $pair)
-                                    <div class="flex items-center">
-                                        <span class="inline-block bg-green-100 text-green-800 rounded-full px-3 py-1 text-sm font-semibold mr-2 mb-2">{{ $pair }}</span>
+                                <!-- Name -->
+                                <div class="col-span-6 sm:col-span-4 mt-6">
+                                    <x-label for="name" value="{{ __('Name') }}" class="text-gray-700" />
+                                    <x-input id="name" type="text" class="mt-1 block w-full bg-gray-50" value="{{ $translator->user->name }}" disabled />
+                                </div>
+
+                                <!-- Email -->
+                                <div class="col-span-6 sm:col-span-4 mt-4">
+                                    <x-label for="email" value="{{ __('Email') }}" class="text-gray-700" />
+                                    <x-input id="email" type="email" class="mt-1 block w-full bg-gray-50" value="{{ $translator->user->email }}" disabled />
+                                </div>
+
+                                <!-- Expertise Section -->
+                                <div class="col-span-6 sm:col-span-4 mt-6">
+                                    <x-label value="{{ __('Types of Translation') }}" class="text-lg text-gray-700 mb-2" />
+                                    <div class="mt-2 flex flex-wrap bg-gray-50 p-3 rounded-md">
+                                        @foreach(json_decode($translator->type_of_translator) as $type)
+                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 mr-2 mb-2">
+                                                {{ $type }}
+                                            </span>
+                                        @endforeach
                                     </div>
-                                @endforeach
-                            </div>
+                                </div>
+
+                                <!-- Language Skills Section -->
+                                <div class="col-span-6 sm:col-span-4 mt-4">
+                                    <x-label value="{{ __('Language Pairs') }}" class="text-lg text-gray-700 mb-2" />
+                                    <div class="mt-2 flex flex-wrap bg-gray-50 p-3 rounded-md">
+                                        @foreach(json_decode($translator->language_pairs) as $pair)
+                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 mr-2 mb-2">
+                                                {{ $pair }}
+                                            </span>
+                                        @endforeach
+                                    </div>
+                                </div>
+
+                                <!-- Professional Details Section -->
+                                <div class="col-span-6 sm:col-span-4 mt-6">
+                                    <h3 class="text-lg font-medium text-gray-700 mb-4">{{ __('Professional Details') }}</h3>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div>
+                                            <x-label value="{{ __('Years of Experience') }}" class="text-gray-700" />
+                                            <x-input type="text" class="mt-1 block w-full bg-gray-50" value="{{ $translator->years_of_experience }}" disabled />
+                                        </div>
+                                        <div>
+                                            <x-label value="{{ __('Rate per Word') }}" class="text-gray-700" />
+                                            <x-input type="text" class="mt-1 block w-full bg-gray-50" value="{{ number_format($translator->rate_per_word, 2) }}" disabled />
+                                        </div>
+                                        <div>
+                                            <x-label value="{{ __('Rate per Hour') }}" class="text-gray-700" />
+                                            <x-input type="text" class="mt-1 block w-full bg-gray-50" value="{{ number_format($translator->rate_per_hour, 2) }}" disabled />
+                                        </div>
+                                        <div>
+                                            <x-label value="{{ __('Availability') }}" class="text-gray-700" />
+                                            <x-input type="text" class="mt-1 block w-full bg-gray-50" value="{{ $translator->availability }}" disabled />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- About You Section -->
+                                <div class="col-span-6 sm:col-span-4 mt-6">
+                                    <x-label value="{{ __('Bio') }}" class="text-lg text-gray-700 mb-2" />
+                                    <textarea class="mt-1 block w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md bg-gray-50" rows="4" disabled>{{ $translator->bio }}</textarea>
+                                </div>
+                            </x-slot>
+                        </x-form-section>
+
+                        <!-- Edit Button -->
+                        <div class="mt-8 flex justify-center gap-4">
+                            <a href="{{ route('translators.edit', $translator) }}" class="px-6 py-3 bg-gradient-to-r from-purple-400 to-purple-600 text-white font-medium rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-300">
+                                Edit Profile
+                            </a>
+
                         </div>
-                    </div>
 
-                    <!-- Professional Details Section -->
-                    <div>
-                        <h2 class="text-xl font-semibold mb-3 text-gray-800 pb-4">Professional Details</h2>
 
-                        <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700 mb-1 pb-4">Years of Experience</label>
-                            <p class="mt-1 block w-full rounded-md border-gray-300 bg-gray-50 py-2 px-3">{{ $translator->years_of_experience }}</p>
-                        </div>
-
-                        <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Rate per Word</label>
-                            <p class="mt-1 block w-full rounded-md border-gray-300 bg-gray-50 py-2 px-3">{{ number_format($translator->rate_per_word, 2) }}</p>
-                        </div>
-
-                        <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Rate per Hour</label>
-                            <p class="mt-1 block w-full rounded-md border-gray-300 bg-gray-50 py-2 px-3">{{ number_format($translator->rate_per_hour, 2) }}</p>
-                        </div>
-
-                        <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Availability</label>
-                            <p class="mt-1 block w-full rounded-md border-gray-300 bg-gray-50 py-2 px-3">{{ $translator->availability }}</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- About You Section -->
-                <div class="mt-8">
-                    <h2 class="text-xl font-semibold mb-3 text-gray-800 pb-4">About You</h2>
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Bio</label>
-                        <p class="mt-1 block w-full rounded-md border-gray-300 bg-gray-50 py-2 px-3">{{ $translator->bio }}</p>
-                    </div>
-                </div>
-
-                <!-- Edit Button -->
-                <div class="mt-8 flex justify-center">
-                    <a href="{{ route('translators.edit', $translator) }}" class="px-4 py-2 bg-blue-500 text-black font-medium rounded-md border-2 border-blue-700 shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-300">
-                        Edit Profile
-                    </a>
                 </div>
             </div>
         </div>
     </div>
+
+
 </x-app-layout>
