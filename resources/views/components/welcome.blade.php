@@ -139,11 +139,11 @@
                         <div class="flex items-center mb-4">
                             <img src="https://via.placeholder.com/50" alt="Client" class="w-12 h-12 rounded-full mr-4">
                             <div>
-                                <h4 class="font-semibold text-lg">John Doe</h4>
+                                <h4 class="font-semibold text-lg">Client 1</h4>
                                 <p class="text-gray-600">Client</p>
                             </div>
                         </div>
-                        <p class="text-gray-700">"Perfect Translate helped me reach a global audience with their excellent translation services. Highly recommended!"</p>
+                        <p class="text-gray-700">"blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah "</p>
                     </div>
                 </div>
                 <!-- Translator Review 1 -->
@@ -152,11 +152,11 @@
                         <div class="flex items-center mb-4">
                             <img src="https://via.placeholder.com/50" alt="Translator" class="w-12 h-12 rounded-full mr-4">
                             <div>
-                                <h4 class="font-semibold text-lg">Jane Smith</h4>
+                                <h4 class="font-semibold text-lg">Translator 1</h4>
                                 <p class="text-gray-600">Translator</p>
                             </div>
                         </div>
-                        <p class="text-gray-700">"As a translator, Perfect Translate has been an amazing platform to showcase my skills and connect with clients worldwide."</p>
+                        <p class="text-gray-700">"blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah "</p>
                     </div>
                 </div>
                 <!-- Client Review 2 -->
@@ -165,11 +165,11 @@
                         <div class="flex items-center mb-4">
                             <img src="https://via.placeholder.com/50" alt="Client" class="w-12 h-12 rounded-full mr-4">
                             <div>
-                                <h4 class="font-semibold text-lg">Alice Johnson</h4>
+                                <h4 class="font-semibold text-lg">Client 2</h4>
                                 <p class="text-gray-600">Client</p>
                             </div>
                         </div>
-                        <p class="text-gray-700">"The quality of translations I received through Perfect Translate was outstanding. It really helped my business expand internationally."</p>
+                        <p class="text-gray-700">"blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah "</p>
                     </div>
                 </div>
                 <!-- Translator Review 2 -->
@@ -178,11 +178,11 @@
                         <div class="flex items-center mb-4">
                             <img src="https://via.placeholder.com/50" alt="Translator" class="w-12 h-12 rounded-full mr-4">
                             <div>
-                                <h4 class="font-semibold text-lg">Mark Wilson</h4>
+                                <h4 class="font-semibold text-lg">Translator 2</h4>
                                 <p class="text-gray-600">Translator</p>
                             </div>
                         </div>
-                        <p class="text-gray-700">"Perfect Translate provides a user-friendly platform that makes it easy to find interesting projects and collaborate with clients efficiently."</p>
+                        <p class="text-gray-700">"blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah "</p>
                     </div>
                 </div>
                 <!-- Client Review 3 -->
@@ -191,11 +191,11 @@
                         <div class="flex items-center mb-4">
                             <img src="https://via.placeholder.com/50" alt="Client" class="w-12 h-12 rounded-full mr-4">
                             <div>
-                                <h4 class="font-semibold text-lg">Emily Chen</h4>
+                                <h4 class="font-semibold text-lg">Client 3</h4>
                                 <p class="text-gray-600">Client</p>
                             </div>
                         </div>
-                        <p class="text-gray-700">"I was impressed by the speed and accuracy of the translations. Perfect Translate made my product launch in a new market seamless."</p>
+                        <p class="text-gray-700">"blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah "</p>
                     </div>
                 </div>
                 <!-- Translator Review 3 -->
@@ -204,11 +204,11 @@
                         <div class="flex items-center mb-4">
                             <img src="https://via.placeholder.com/50" alt="Translator" class="w-12 h-12 rounded-full mr-4">
                             <div>
-                                <h4 class="font-semibold text-lg">Carlos Rodriguez</h4>
+                                <h4 class="font-semibold text-lg">Translator 3</h4>
                                 <p class="text-gray-600">Translator</p>
                             </div>
                         </div>
-                        <p class="text-gray-700">"The diverse range of projects on Perfect Translate keeps my work exciting. It's a great platform for professional growth."</p>
+                        <p class="text-gray-700">"blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah" </p>
                     </div>
                 </div>
                 <!-- Client Review 4 -->
@@ -217,11 +217,11 @@
                         <div class="flex items-center mb-4">
                             <img src="https://via.placeholder.com/50" alt="Client" class="w-12 h-12 rounded-full mr-4">
                             <div>
-                                <h4 class="font-semibold text-lg">Sarah Thompson</h4>
+                                <h4 class="font-semibold text-lg">Client 4</h4>
                                 <p class="text-gray-600">Client</p>
                             </div>
                         </div>
-                        <p class="text-gray-700">"Perfect Translate's localization services helped us adapt our content perfectly for different markets. Excellent attention to cultural nuances!"</p>
+                        <p class="text-gray-700">"blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah "</p>
                     </div>
                 </div>
             </div>
