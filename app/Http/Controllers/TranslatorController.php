@@ -140,6 +140,7 @@ class TranslatorController extends Controller
                 $translator->verification_status = 'Pending';
                 $translator->save();
 
+
                 // Send email notification
                 Mail::to($translator->user->email)->send(new CertificateUploadedNotification());
 
