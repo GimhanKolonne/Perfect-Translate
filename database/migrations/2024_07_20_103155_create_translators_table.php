@@ -18,6 +18,9 @@ return new class extends Migration
             $table->text('bio');
             $table->text('type_of_translator');
             $table->text('language_pairs');
+            $table->string('certificate_path')->nullable();
+            $table->enum('verification_status', ['Not Verified', 'Pending', 'Verified'])->default('Not Verified');
+            $table->enum('status', ['Active', 'Inactive'])->default('Active');
             $table->string('slug')->unique();
             $table->timestamps();
         });

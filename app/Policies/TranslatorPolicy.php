@@ -13,7 +13,7 @@ class TranslatorPolicy
      */
     public function viewAny(User $user): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -21,7 +21,7 @@ class TranslatorPolicy
      */
     public function view(User $user, Translator $translator): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -29,7 +29,7 @@ class TranslatorPolicy
      */
     public function create(User $user): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -37,7 +37,7 @@ class TranslatorPolicy
      */
     public function update(User $user, Translator $translator): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -45,7 +45,7 @@ class TranslatorPolicy
      */
     public function delete(User $user, Translator $translator): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -53,7 +53,7 @@ class TranslatorPolicy
      */
     public function restore(User $user, Translator $translator): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -61,6 +61,6 @@ class TranslatorPolicy
      */
     public function forceDelete(User $user, Translator $translator): bool
     {
-        //
+        return true;
     }
 }

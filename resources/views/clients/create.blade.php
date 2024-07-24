@@ -16,37 +16,37 @@
 
                         <div class="mb-4">
                             <label for="company_name" class="block text-sm font-medium text-gray-700 mb-1">Company Name</label>
-                            <input type="text" name="company_name" id="company_name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                            <input type="text" name="company_name" id="company_name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required maxlength="255">
                         </div>
 
                         <div class="mb-4">
                             <label for="contact_name" class="block text-sm font-medium text-gray-700 mb-1">Contact Name</label>
-                            <input type="text" name="contact_name" id="contact_name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required>
+                            <input type="text" name="contact_name" id="contact_name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required maxlength="255">
                         </div>
 
                         <div class="mb-4">
                             <label for="contact_phone" class="block text-sm font-medium text-gray-700 mb-1">Contact Phone</label>
-                            <input type="text" name="contact_phone" id="contact_phone" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                            <input type="tel" name="contact_phone" id="contact_phone" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" pattern="[0-9]{10,15}" title="Please enter a valid phone number (10-15 digits)">
                         </div>
 
                         <div class="mb-4">
                             <label for="company_address" class="block text-sm font-medium text-gray-700 mb-1">Company Address</label>
-                            <textarea name="company_address" id="company_address" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"></textarea>
+                            <textarea name="company_address" id="company_address" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" maxlength="500"></textarea>
                         </div>
 
                         <div class="mb-4">
                             <label for="country" class="block text-sm font-medium text-gray-700 mb-1">Country</label>
-                            <input type="text" name="country" id="country" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                            <input type="text" name="country" id="country" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" maxlength="100">
                         </div>
 
                         <div class="mb-4">
                             <label for="website" class="block text-sm font-medium text-gray-700 mb-1">Website</label>
-                            <input type="url" name="website" id="website" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                            <input type="url" name="website" id="website" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" pattern="https?://.+" title="Please enter a valid URL starting with http:// or https://">
                         </div>
 
                         <div class="mb-4">
                             <label for="industry" class="block text-sm font-medium text-gray-700 mb-1">Industry</label>
-                            <input type="text" name="industry" id="industry" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                            <input type="text" name="industry" id="industry" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" maxlength="100">
                         </div>
                     </div>
 
@@ -56,13 +56,10 @@
 
                         <div class="mb-4">
                             <label for="bio" class="block text-sm font-medium text-gray-700 mb-1">Bio</label>
-                            <textarea name="bio" id="bio" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Tell us about your company, goals, and services..."></textarea>
+                            <textarea name="bio" id="bio" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Tell us about your company, goals, and services..." maxlength="1000"></textarea>
                         </div>
                     </div>
                 </div>
-
-
-
 
                 <!-- Submit Button -->
                 <div class="mt-8 flex justify-center">

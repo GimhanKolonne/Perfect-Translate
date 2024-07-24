@@ -19,7 +19,7 @@ use Laravel\Sanctum\HasApiTokens;
   * @property string $role
   * @property \Illuminate\Support\Carbon|null $email_verified_at
   */
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable //implements MustVerifyEmail
 {
     use HasApiTokens;
     use HasFactory;
