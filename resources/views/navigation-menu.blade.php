@@ -22,14 +22,22 @@
                                 {{ __('View Profile') }}
                             </x-nav-link>
                         @endif
-                        <x-nav-link href="{{ route('home') }}" :active="request()->routeIs('home')">
-                            {{ __('Find Work') }}
-                        </x-nav-link>
+
+
+                        @if(auth()->user()->role === 'client')
+                                <x-nav-link href="{{ route('projects.index') }}" :active="request()->routeIs('projects.index')">
+                                    {{ __('Post Jobs') }}
+                                </x-nav-link>
+                            @elseif(auth()->user()->role === 'translator')
+                                <x-nav-link href="{{ route('projects.display-projects') }}" :active="request()->routeIs('projects.display-projects')">
+                                    {{ __('Look For Work') }}
+                                </x-nav-link>
+                        @endif
 
                         <x-nav-link href="{{ route('translators.index') }}" :active="request()->routeIs('translators.index')">
                             {{ __('Find Translators') }}
                         </x-nav-link>
-                        <x-nav-link href="{{ route('home') }}" :active="request()->routeIs('home')">
+                        <x-nav-link href="{{ route('clients.index') }}" :active="request()->routeIs('clients.index')">
                             {{ __('Find Clients') }}
                         </x-nav-link>
                     @endauth

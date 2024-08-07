@@ -2,19 +2,51 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Client;
 use App\Http\Requests\StoreClientRequest;
 use App\Http\Requests\UpdateClientRequest;
+use App\Models\Client;
+use Illuminate\Http\Request;
 
 class ClientController extends Controller
 {
-
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
         return view('clients.create');
+    }
+
+    public function index()
+    {
+        return view('clients.index', [
+            'clients' => Client::orderBy('created_at', 'DESC')->paginate(),
+        ]);
+    }
+
+    public function displayProfile($id)
+    {
+        $client = Client::findOrFail($id);
+
+        return view('clients.display', compact('client'));
+    }
+
+    public function search(Request $request)
+    {
+        $search = $request->search;
+
+        if (empty($search)) {
+            return redirect()->route('clients.index');
+        }
+
+        $query = Client::query();
+
+        $query->whereAny(['contact_name', 'company_name'], 'LIKE', "%$search%");
+
+        $clients = $query->paginate();
+
+        return view('clients.index', compact('clients'));
+
     }
 
     /**
@@ -39,7 +71,6 @@ class ClientController extends Controller
         return redirect()->route('home')
             ->with('flash.banner', 'Profile created successfully');
     }
-
 
     /**
      * Display the specified resource.

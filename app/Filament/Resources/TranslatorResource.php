@@ -15,10 +15,13 @@ use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ViewColumn;
 use Filament\Tables\Table;
+
 class TranslatorResource extends Resource
 {
     protected static ?string $model = Translator::class;
+
     protected static ?string $slug = 'translators';
+
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Form $form): Form
@@ -38,8 +41,8 @@ class TranslatorResource extends Resource
                 TextInput::make('verification_status')->required(),
                 FileUpload::make('certificate_path')->label('Certificate')
                     ->directory('certificates')
-                    ->acceptedFileTypes(['application/pdf'])
-                    ->required(),
+                    ->acceptedFileTypes(['application/pdf']),
+
             ]);
     }
 
@@ -58,6 +61,8 @@ class TranslatorResource extends Resource
                 TextColumn::make('status'),
                 TextColumn::make('user_id'),
                 ViewColumn::make('certificate_path')->label('Certificate')->view('filament.resources.translator-resource.pages.certificate'),
+                TextColumn::make('verification_status'),
+
             ])
             ->filters([
                 //
@@ -65,6 +70,8 @@ class TranslatorResource extends Resource
             ->actions([
                 EditAction::make(),
                 DeleteAction::make(),
+                VerifyAction::make(),
+                RemoveVerifyAction::make(),
             ])
             ->bulkActions([
                 BulkActionGroup::make([

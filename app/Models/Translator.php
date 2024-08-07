@@ -34,8 +34,10 @@ class Translator extends Model
         'slug',
         'status',
         'user_id',
+        'verification_status',
 
     ];
+
     protected $casts = [
         'type_of_translator' => 'array',
         'language_pairs' => 'array',
@@ -47,9 +49,8 @@ class Translator extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function certificates()
+    public function projects()
     {
-        return $this->hasMany(Certificate::class);
+        return $this->hasMany(Projects::class);
     }
 }
-

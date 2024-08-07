@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
- use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -10,23 +9,22 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
 
- /**
-  * User
-  *
-  * @property int $id
-  * @property string $name
-  * @property string $email
-  * @property string $role
-  * @property \Illuminate\Support\Carbon|null $email_verified_at
-  */
-class User extends Authenticatable implements MustVerifyEmail
+/**
+ * User
+ *
+ * @property int $id
+ * @property string $name
+ * @property string $email
+ * @property string $role
+ * @property \Illuminate\Support\Carbon|null $email_verified_at
+ */
+class User extends Authenticatable
 {
     use HasApiTokens;
     use HasFactory;
     use HasProfilePhoto;
     use Notifiable;
     use TwoFactorAuthenticatable;
-
 
     /**
      * The attributes that are mass assignable.
@@ -39,8 +37,6 @@ class User extends Authenticatable implements MustVerifyEmail
         'password',
         'role',
     ];
-
-
 
     /**
      * The attributes that should be hidden for serialization.
@@ -78,8 +74,7 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
-
-        public function translator()
+    public function translator()
     {
         return $this->hasOne(Translator::class);
     }
@@ -89,5 +84,13 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasOne(Client::class);
     }
 
+    public function isClient()
+    {
+        return $this->role === 'client';
+    }
 
+    public function projects()
+    {
+        return $this->hasMany(Project::class);
+    }
 }

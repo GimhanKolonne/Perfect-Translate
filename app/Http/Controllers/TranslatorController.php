@@ -2,33 +2,69 @@
 
 namespace App\Http\Controllers;
 
-use App\Mail\CertificateSubmitted;
-use App\Mail\CertificateUploadedNotification;
-use App\Models\Translator;
 use App\Http\Requests\StoreTranslatorRequest;
 use App\Http\Requests\UpdateTranslatorRequest;
+use App\Mail\CertificateUploadedNotification;
+use App\Models\Translator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
 
 class TranslatorController extends Controller
 {
-
     /**
      * Show the form for creating a new resource.
      */
-
-
     public function index()
     {
-        return view('translators.index', [
-            'translators' => Translator::all()
-        ]);
+        $translators = Translator::with('user')
+            ->paginate(12)  // Number of items per page
+            ->through(function ($translator) {
+                $translator->type_of_translator = json_decode($translator->type_of_translator, true) ?? [];
+                $translator->language_pairs = json_decode($translator->language_pairs, true) ?? [];
+
+                return $translator;
+            });
+
+        return view('translators.index', compact('translators'));
+    }
+
+    public function displayProfile($id)
+    {
+        $translator = Translator::findOrFail($id);
+
+        return view('translators.display', compact('translator'));
     }
 
     public function create()
     {
         return view('translators.create');
+    }
+
+    public function search(Request $request)
+    {
+        $search = $request->search;
+
+        if (empty($search)) {
+            return redirect()->route('translators.index');
+        }
+
+        $query = Translator::query()
+            ->join('users', 'translators.user_id', '=', 'users.id')
+            ->select('translators.*')
+            ->where('users.name', 'LIKE', "%$search%")
+            ->orWhere('language_pairs', 'LIKE', "%$search%");
+
+        $translators = $query->paginate(12)
+            ->through(function ($translator) {
+                $translator->type_of_translator = json_decode($translator->type_of_translator, true) ?? [];
+                $translator->language_pairs = json_decode($translator->language_pairs, true) ?? [];
+
+                return $translator;
+            });
+
+        return view('translators.index', compact('translators'));
+
     }
 
     /**
@@ -38,7 +74,6 @@ class TranslatorController extends Controller
     {
         // Get the validated data
         $validated = $request->validated();
-
 
         $validated['slug'] = \Str::slug($validated['bio']);
 
@@ -58,7 +93,6 @@ class TranslatorController extends Controller
             ->with('flash.banner', 'Profile created successfully');
     }
 
-
     /**
      * Display the specified resource.
      */
@@ -66,7 +100,6 @@ class TranslatorController extends Controller
     {
         return view('translators.show', compact('translator'));
     }
-
 
     /**
      * Show the form for editing the specified resource.
@@ -79,7 +112,6 @@ class TranslatorController extends Controller
 
         return view('translators.edit', compact('translator'));
     }
-
 
     /**
      * Update the specified resource in storage.
@@ -100,7 +132,6 @@ class TranslatorController extends Controller
             ->with('flash.banner', 'Profile updated successfully');
     }
 
-
     /**
      * Remove the specified resource from storage.
      */
@@ -108,6 +139,7 @@ class TranslatorController extends Controller
     {
         //
     }
+
     public function uploadCertificate(Request $request)
     {
         try {
@@ -140,7 +172,6 @@ class TranslatorController extends Controller
                 $translator->verification_status = 'Pending';
                 $translator->save();
 
-
                 // Send email notification
                 Mail::to($translator->user->email)->send(new CertificateUploadedNotification());
 
@@ -153,7 +184,8 @@ class TranslatorController extends Controller
             return redirect()->back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
             // Log the error for debugging
-            \Log::error('Certificate upload error: ' . $e->getMessage());
+            \Log::error('Certificate upload error: '.$e->getMessage());
+
             return redirect()->back()->with('error', 'An unexpected error occurred. Please try again later.');
         }
     }

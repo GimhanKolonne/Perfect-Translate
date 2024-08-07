@@ -19,7 +19,7 @@ class TranslatorFactory extends Factory
         return [
 
             'type_of_translator' => $this->faker->word,
-            'language_pairs' => $this->faker->word,
+            'language_pairs' => $this->faker->text,
             'years_of_experience' => $this->faker->randomNumber(2),
             'rate_per_word' => $this->faker->randomFloat(2, 0, 999999.99),
             'rate_per_hour' => $this->faker->randomFloat(2, 0, 999999.99),
