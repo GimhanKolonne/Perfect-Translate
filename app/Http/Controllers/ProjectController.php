@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
+use App\Models\Application;
 use App\Models\Project;
+use App\Models\Review;
 use Illuminate\Http\Request;
 
 class ProjectController extends Controller
@@ -12,19 +14,86 @@ class ProjectController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Project $projects)
     {
-        $client = auth()->user();
-        $projects = $client->projects()->paginate(10); // Retrieve the client's projects and paginate
+        $user = auth()->user();
 
-        return view('projects.index', compact('projects'));
+
+        $projects = $user->projects()
+            ->withCount('applications')
+            ->with(['applications' => function ($query) {
+                $query->select('project_id', 'user_id');
+            }])
+            ->paginate(10);
+
+
+
+        $client = $user->client;
+
+        $verified = $client->verification_status;
+
+
+
+        return view('projects.index', compact('projects', 'verified'));
+    }
+
+
+
+    public function projectFilter(Request $request)
+    {
+        $user = auth()->user();
+
+        $query = Project::query()
+            ->where('user_id', $user->id);
+
+        if ($request->has('status')) {
+            $query->where('project_status', $request->status);
+        }
+
+        $verified = $user->client->verification_status;
+
+        $projects = $query->paginate(9);
+
+        return view('projects.index', [
+            'projects' => $projects,
+            'verified' => $verified,
+        ]);
     }
 
     public function displayProjects()
     {
-        $projects = Project::orderBy('created_at', 'DESC')->paginate();
+        $userId = auth()->id();
+
+        // Get all projects for the authenticated user, including those with and without applications
+        $projects = Project::with(['applications' => function ($query) use ($userId) {
+            $query->where('user_id', $userId);
+        }])
+            ->where('project_status', 'Pending')
+            ->orderBy('created_at', 'DESC')
+            ->withCount('applications')
+            ->paginate();
 
         return view('projects.display', compact('projects'));
+    }
+
+    public function viewProjects($id)
+    {
+
+        $projects = Project::findOrFail($id);
+
+        $user = $projects->user;
+
+        $client = $user->client;
+
+        $translator = auth()->user()->id;
+
+        $alreadyApplied = Application::where('project_id', $id)
+            ->where('user_id', $translator)
+            ->exists();
+
+
+
+        return view('projects.show', compact('projects', 'user', 'client', 'alreadyApplied'));
 
     }
 
@@ -33,6 +102,7 @@ class ProjectController extends Controller
      */
     public function create()
     {
+
         return view('projects.create');
     }
 
@@ -54,10 +124,7 @@ class ProjectController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Project $project)
-    {
-        //
-    }
+    public function show(Project $project) {}
 
     /**
      * Show the form for editing the specified resource.
@@ -128,5 +195,64 @@ class ProjectController extends Controller
 
         return view('projects.display', compact('projects'));
 
+    }
+
+    public function updateStatus(Request $request, Project $project)
+    {
+        $request->validate([
+            'status' => 'required|string|in:Pending,In Progress,Completed,Cancelled',
+        ]);
+
+        // Update project status
+        $project->update(['project_status' => $request->status]);
+
+        // If project status is "Completed", update application status
+        if ($request->status === 'Completed') {
+            $project->applications()->update(['status' => 'Completed']);
+
+        }
+
+        return redirect()->route('projects.index')->with('success', 'Project status updated successfully.');
+    }
+
+    public function sentApplications()
+    {
+        $userId = auth()->id();
+
+        $projects = Project::whereHas('applications', function ($query) use ($userId) {
+            $query->where('user_id', $userId)
+                ->where('status', 'Pending');
+        })
+            ->withCount('applications')
+            ->orderBy('created_at', 'DESC')
+            ->paginate();
+
+        return view('projects.display', compact('projects'));
+    }
+
+    public function acceptedApplications()
+    {
+        $userId = auth()->id();
+
+        $projects = Project::whereHas('applications', function ($query) use ($userId) {
+            $query->where('user_id', $userId)
+                ->where('status', 'Accepted');
+        })
+            ->orderBy('created_at', 'DESC')->paginate();
+
+        return view('projects.display', compact('projects'));
+    }
+
+    public function completedApplications()
+    {
+        $userId = auth()->id();
+
+        $projects = Project::whereHas('applications', function ($query) use ($userId) {
+            $query->where('user_id', $userId)
+                ->where('status', 'Completed');
+        })
+            ->orderBy('created_at', 'DESC')->paginate();
+
+        return view('projects.display', compact('projects'));
     }
 }

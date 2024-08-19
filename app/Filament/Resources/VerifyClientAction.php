@@ -7,7 +7,7 @@ use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables\Actions\Action;
 use Illuminate\Database\Eloquent\Model;
 
-class VerifyAction extends Action
+class VerifyClientAction extends Action
 {
     use cancustomizeprocess;
 
@@ -19,11 +19,11 @@ class VerifyAction extends Action
     protected function setUp(): void
     {
         parent::setUp();
-        $this->label(__('Verify Translator'));
-        $this->modalHeading(fn (): string => __('Verify Translator', ['label' => $this->getRecordTitle()]));
-        $this->modalSubmitActionLabel(__('Verify Translator'));
-        $this->successNotificationTitle(__('Translator Verified'));
-        $this->failureNotificationTitle(__('Translator Already Verified'));
+        $this->label(__('Verify Client'));
+        $this->modalHeading(fn (): string => __('Verify Client', ['label' => $this->getRecordTitle()]));
+        $this->modalSubmitActionLabel(__('Verify Client'));
+        $this->successNotificationTitle(__('Client Verified'));
+        $this->failureNotificationTitle(__('Client Already Verified'));
         $this->color('success');
         $this->icon(FilamentIcon::resolve('actions::verify-action') ?? 'heroicon-m-check');
         $this->requiresConfirmation();

@@ -22,7 +22,7 @@ return new class extends Migration
             $table->date('project_start_date')->nullable();
             $table->date('project_end_date')->nullable();
             $table->decimal('project_budget', 10, 2)->nullable();
-            $table->string('project_status')->default('Pending');
+            $table->enum('project_status', ['Pending', 'In Progress', 'Completed', 'Cancelled'])->default('Pending');
             $table->boolean('editing_proofreading_allowed')->default(false);
             $table->boolean('bidding_allowed')->default(false);
             $table->string('slug')->unique();

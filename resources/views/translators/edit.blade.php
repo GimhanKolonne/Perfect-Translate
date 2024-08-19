@@ -1,27 +1,24 @@
 <x-app-layout>
-    <div class="bg-gray-100 min-h-screen py-12 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-xl overflow-hidden">
-            <div class="bg-gradient-to-r from-purple-400 to-purple-600 p-6">
-                <h1 class="text-3xl font-bold text-white text-center">Edit Your Translator Profile</h1>
-            </div>
+    <div class="bg-gradient-to-b from-purple-100 to-white min-h-screen py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-white rounded-2xl shadow-2xl overflow-hidden">
+                <div class="bg-gradient-to-r from-purple-600 to-purple-800 h-40 flex items-center justify-center">
+                    <h1 class="text-4xl font-extrabold text-white text-center">Edit Your Translator Profile</h1>
+                </div>
+                <form action="{{ route('translators.update', $translator) }}" method="POST" enctype="multipart/form-data" class="p-8">
+                    @csrf
+                    @method('PUT')
+                    <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
 
-            <form action="{{ route('translators.update', $translator) }}" method="POST" enctype="multipart/form-data" class="p-6 sm:p-8">
-                @csrf
-                @method('PUT')
-
-
-                <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
-
-                <div class="grid md:grid-cols-2 gap-6">
-                    <div>
-                        <div class="mb-6">
-                            <h2 class="text-xl font-semibold mb-3 text-gray-800 pb-4">Expertise</h2>
-                            <label class="block text-sm font-medium text-gray-700 mb-2 pb-4">What Type of Translator are you?</label>
-                            <div class="grid grid-cols-2 gap-2">
+                    <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
+                        <!-- Type of Translator -->
+                        <div class="bg-purple-50 rounded-xl shadow-lg border border-purple-200 p-6 transition duration-300 hover:shadow-xl">
+                            <h3 class="text-xl font-semibold text-purple-800 mb-4">{{ __('Type of Translator') }}</h3>
+                            <div class="grid grid-cols-2 gap-3">
                                 @foreach(['General', 'Technical', 'Legal', 'Medical', 'Literary', 'Financial'] as $type)
                                     <div class="flex items-center">
                                         <input type="checkbox" name="type_of_translator[]" id="type_{{ $type }}" value="{{ $type }}"
-                                               class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                               class="rounded border-purple-300 text-purple-600 focus:ring-purple-500"
                                             {{ in_array($type, $translator->type_of_translator) ? 'checked' : '' }}>
                                         <label for="type_{{ $type }}" class="ml-2 text-sm text-gray-700">{{ $type }}</label>
                                     </div>
@@ -29,10 +26,10 @@
                             </div>
                         </div>
 
-                        <div class="mb-6">
-                            <h2 class="text-xl font-semibold mb-3 text-gray-800 pb-4">Language Skills</h2>
-                            <label class="block text-sm font-medium text-gray-700 mb-2 pb-4">Language Pairs</label>
-                            <div class="grid grid-cols-2 gap-2">
+                        <!-- Language Skills -->
+                        <div class="bg-purple-50 rounded-xl shadow-lg border border-purple-200 p-6 transition duration-300 hover:shadow-xl">
+                            <h3 class="text-xl font-semibold text-purple-800 mb-4">{{ __('Language Pairs') }}</h3>
+                            <div class="grid grid-cols-2 gap-3">
                                 @php
                                     $languages = ['Sinhala', 'Tamil', 'English'];
                                     $pairs = [];
@@ -47,61 +44,68 @@
                                 @foreach($pairs as $pair)
                                     <div class="flex items-center">
                                         <input type="checkbox" name="language_pairs[]" id="pair_{{ str_replace(' ', '_', $pair) }}" value="{{ $pair }}"
-                                               class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                               class="rounded border-purple-300 text-purple-600 focus:ring-purple-500"
                                             {{ in_array($pair, $translator->language_pairs) ? 'checked' : '' }}>
                                         <label for="pair_{{ str_replace(' ', '_', $pair) }}" class="ml-2 text-sm text-gray-700">{{ $pair }}</label>
                                     </div>
                                 @endforeach
                             </div>
                         </div>
+
+                        <!-- Professional Details -->
+                        <div class="bg-purple-50 rounded-xl shadow-lg border border-purple-200 p-6 transition duration-300 hover:shadow-xl">
+                            <h3 class="text-xl font-semibold text-purple-800 mb-4">{{ __('Professional Details') }}</h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <label for="years_of_experience" class="block text-sm font-medium text-gray-700">Years of Experience</label>
+                                    <input type="number" name="years_of_experience" id="years_of_experience"
+                                           value="{{ old('years_of_experience', $translator->years_of_experience) }}"
+                                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-300 focus:ring focus:ring-purple-200 focus:ring-opacity-50">
+                                </div>
+                                <div>
+                                    <label for="rate_per_word" class="block text-sm font-medium text-gray-700">Rate per Word ($)</label>
+                                    <input type="number" name="rate_per_word" id="rate_per_word"
+                                           value="{{ old('rate_per_word', $translator->rate_per_word) }}" step="0.01" min="0"
+                                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-300 focus:ring focus:ring-purple-200 focus:ring-opacity-50">
+                                </div>
+                                <div>
+                                    <label for="rate_per_hour" class="block text-sm font-medium text-gray-700">Rate per Hour ($)</label>
+                                    <input type="number" name="rate_per_hour" id="rate_per_hour"
+                                           value="{{ old('rate_per_hour', $translator->rate_per_hour) }}" step="0.01" min="0"
+                                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-300 focus:ring focus:ring-purple-200 focus:ring-opacity-50">
+                                </div>
+                                <div>
+                                    <label for="availability" class="block text-sm font-medium text-gray-700">Availability</label>
+                                    <select name="availability" id="availability"
+                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-300 focus:ring focus:ring-purple-200 focus:ring-opacity-50">
+                                        <option value="Full-time" {{ old('availability', $translator->availability) === 'Full-time' ? 'selected' : '' }}>Full-time</option>
+                                        <option value="Part-time" {{ old('availability', $translator->availability) === 'Part-time' ? 'selected' : '' }}>Part-time</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- About You -->
+                        <div class="bg-purple-50 rounded-xl shadow-lg border border-purple-200 p-6 transition duration-300 hover:shadow-xl">
+                            <h3 class="text-xl font-semibold text-purple-800 mb-4">{{ __('About You') }}</h3>
+                            <div>
+                                <label for="bio" class="block text-sm font-medium text-gray-700 mb-1">Bio</label>
+                                <textarea name="bio" id="bio" rows="6"
+                                          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-300 focus:ring focus:ring-purple-200 focus:ring-opacity-50"
+                                          placeholder="Tell clients about your experience, skills, and working style...">{{ old('bio', $translator->bio) }}</textarea>
+                            </div>
+                        </div>
                     </div>
 
-                    <div>
-                        <h2 class="text-xl font-semibold mb-3 text-gray-800 pb-4">Professional Details</h2>
-
-                        <div class="mb-4">
-                            <label for="years_of_experience" class="block text-sm font-medium text-gray-700 mb-1 pb-4">Years of Experience</label>
-                            <input type="number" name="years_of_experience" id="years_of_experience" value="{{ old('years_of_experience', $translator->years_of_experience) }}"
-                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" min="0">
-                        </div>
-
-                        <div class="mb-4">
-                            <label for="rate_per_word" class="block text-sm font-medium text-gray-700 mb-1">Rate per Word ($)</label>
-                            <input type="number" name="rate_per_word" id="rate_per_word" value="{{ old('rate_per_word', $translator->rate_per_word) }}"
-                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" step="0.01" min="0">
-                        </div>
-
-                        <div class="mb-4">
-                            <label for="rate_per_hour" class="block text-sm font-medium text-gray-700 mb-1">Rate per Hour ($)</label>
-                            <input type="number" name="rate_per_hour" id="rate_per_hour" value="{{ old('rate_per_hour', $translator->rate_per_hour) }}"
-                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" step="0.01" min="0">
-                        </div>
-
-                        <div class="mb-4">
-                            <label for="availability" class="block text-sm font-medium text-gray-700 mb-1">Availability</label>
-                            <select name="availability" id="availability" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                                <option value="Full-time" {{ old('availability', $translator->availability) === 'Full-time' ? 'selected' : '' }}>Full-time</option>
-                                <option value="Part-time" {{ old('availability', $translator->availability) === 'Part-time' ? 'selected' : '' }}>Part-time</option>
-                            </select>
-                        </div>
+                    <!-- Submit Button -->
+                    <div class="mt-10 flex justify-end">
+                        <button type="submit"
+                                class="px-8 py-4 bg-gradient-to-r from-purple-600 to-purple-800 text-white text-lg font-semibold rounded-full shadow-lg hover:from-purple-700 hover:to-purple-900 focus:outline-none focus:ring-4 focus:ring-purple-500 focus:ring-opacity-50 transition duration-300 transform hover:scale-105">
+                            {{ __('Update Profile') }}
+                        </button>
                     </div>
-                </div>
-
-                <div class="mt-8">
-                    <h2 class="text-xl font-semibold mb-3 text-gray-800 pb-4">About You</h2>
-                    <div class="mb-4">
-                        <label for="bio" class="block text-sm font-medium text-gray-700 mb-1">Bio</label>
-                        <textarea name="bio" id="bio" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                                  placeholder="Tell clients about your experience, skills, and working style...">{{ old('bio', $translator->bio) }}</textarea>
-                    </div>
-                </div>
-
-                <div class="mt-8 flex justify-center">
-                    <button type="submit" class="px-4 py-2 bg-gradient-to-r from-purple-400 to-purple-600 text-black font-medium rounded-md border-2  shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-300">
-                        Update Your Profile
-                    </button>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
 </x-app-layout>

@@ -16,8 +16,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $project_start_date
  * @property string $project_end_date
  * @property string $project_budget
- * @property string $client_name
- * @property string $client_email
  * @property string $project_status
  * @property string $slug
  * @property string $user_id
@@ -45,5 +43,20 @@ class Project extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function client()
+    {
+        return $this->belongsTo(Client::class);
+    }
+
+    public function applications()
+    {
+        return $this->hasMany(Application::class);
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class, 'reviewee_id', 'user_id');
     }
 }

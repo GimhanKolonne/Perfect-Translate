@@ -22,6 +22,8 @@ return new class extends Migration
             $table->text('website')->nullable();
             $table->string('industry')->nullable();
             $table->text('bio')->nullable();
+            $table->string('document_path')->nullable();
+            $table->enum('verification_status', ['Not Verified', 'Pending', 'Verified'])->default('Not Verified');
             $table->string('slug')->unique();
             $table->timestamps();
         });

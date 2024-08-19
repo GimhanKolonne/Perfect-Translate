@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $bio
  * @property string $slug
  * @property string $user_id
+ * @property string $verification_status
  */
 class Client extends Model
 {
@@ -34,12 +35,18 @@ class Client extends Model
         'bio',
         'slug',
         'user_id',
+        'verification_status',
     ];
 
     public function user()
     {
         return $this->belongsTo(User::class);
 
+    }
+
+    public function projects()
+    {
+        return $this->hasMany(Project::class);
     }
 
     // Client.php

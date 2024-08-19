@@ -36,6 +36,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+
     ];
 
     /**
@@ -87,10 +88,21 @@ class User extends Authenticatable
     public function isClient()
     {
         return $this->role === 'client';
+
     }
 
     public function projects()
     {
         return $this->hasMany(Project::class);
+    }
+
+    public function givenReviews()
+    {
+        return $this->hasMany(Review::class, 'reviewer_id');
+    }
+
+    public function receivedReviews()
+    {
+        return $this->hasMany(Review::class, 'reviewee_id');
     }
 }

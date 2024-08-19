@@ -254,27 +254,6 @@
 
 
 
-<!-- Footer -->
-<footer class="bg-gray-900 text-gray-100 py-12">
-    <div class="container mx-auto px-4">
-        <div class="flex flex-wrap justify-between">
-            <div class="w-full md:w-1/3 mb-8 md:mb-0">
-                <h3 class="font-bold text-2xl mb-4 text-gray-100">Perfect Translate</h3>
-                <p class="text-gray-400">Perfect Place For Perfect Translation</p>
-            </div>
-            <div class="w-full md:w-1/3">
-                <nav class="flex flex-wrap justify-center md:justify-end">
-                    <a href="/" class="text-gray-400 hover:text-white mr-6 mb-4">Home</a>
-                    <a href="#how-it-works" class="text-gray-400 hover:text-white mr-6 mb-4">How It Works</a>
-                    <a href="#services" class="text-gray-400 hover:text-white mr-6 mb-4">Services</a>
-                </nav>
-            </div>
-        </div>
-        <div class="mt-8 text-center text-gray-400">
-            <p>&copy; 2024 Perfect Translate. All rights reserved.</p>
-        </div>
-    </div>
-</footer>
 
 <script>
 

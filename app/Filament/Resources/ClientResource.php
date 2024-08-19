@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ClientResource\Pages;
 use App\Models\Client;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -12,6 +13,7 @@ use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ViewColumn;
 use Filament\Tables\Table;
 
 class ClientResource extends Resource
@@ -55,6 +57,15 @@ class ClientResource extends Resource
 
                 TextInput::make('user_id')
                     ->required(),
+                TextInput::make('verification_status')->required(),
+                FileUpload::make('document_path')
+                    ->label('Documents')
+                    ->directory('documents')
+                    ->acceptedFileTypes(['application/pdf'])
+                    ->multiple() // Allow multiple file uploads
+                    ->maxFiles(5) // Set a limit on the number of files
+                    ->columnSpanFull(),
+
             ]);
     }
 
@@ -83,6 +94,8 @@ class ClientResource extends Resource
                     ->sortable(),
 
                 TextColumn::make('user_id'),
+                ViewColumn::make('document_path')->label('Documents')->view('filament.resources.client-resource.pages.document'),
+                TextColumn::make('verification_status'),
             ])
             ->filters([
                 //
@@ -90,6 +103,9 @@ class ClientResource extends Resource
             ->actions([
                 EditAction::make(),
                 DeleteAction::make(),
+                VerifyClientAction::make(),
+                RemoveClientVerifyAction::make(),
+
             ])
             ->bulkActions([
                 BulkActionGroup::make([

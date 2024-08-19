@@ -49,8 +49,13 @@ class Translator extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function projects()
+    public function applications()
     {
-        return $this->hasMany(Projects::class);
+        return $this->hasMany(Application::class);
+    }
+
+    public function portfolios()
+    {
+        return $this->hasMany(Portfolio::class);
     }
 }

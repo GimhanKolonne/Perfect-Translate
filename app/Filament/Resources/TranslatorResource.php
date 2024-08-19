@@ -39,10 +39,13 @@ class TranslatorResource extends Resource
                 TextInput::make('status')->required(),
                 TextInput::make('user_id')->required(),
                 TextInput::make('verification_status')->required(),
-                FileUpload::make('certificate_path')->label('Certificate')
+                FileUpload::make('certificate_path')
+                    ->label('Certificates')
                     ->directory('certificates')
-                    ->acceptedFileTypes(['application/pdf']),
-
+                    ->acceptedFileTypes(['application/pdf'])
+                    ->multiple() // Allow multiple file uploads
+                    ->maxFiles(5) // Set a limit on the number of files
+                    ->columnSpanFull(),
             ]);
     }
 
@@ -60,18 +63,17 @@ class TranslatorResource extends Resource
                 TextColumn::make('slug')->searchable()->sortable(),
                 TextColumn::make('status'),
                 TextColumn::make('user_id'),
-                ViewColumn::make('certificate_path')->label('Certificate')->view('filament.resources.translator-resource.pages.certificate'),
+                ViewColumn::make('certificate_path')->label('Certificates')->view('filament.resources.translator-resource.pages.certificate'),
                 TextColumn::make('verification_status'),
-
             ])
             ->filters([
-                //
+                // Add your filters here if needed
             ])
             ->actions([
                 EditAction::make(),
                 DeleteAction::make(),
-                VerifyAction::make(),
-                RemoveVerifyAction::make(),
+                VerifyTranslatorAction::make(),
+                RemoveTranslatorVerifyAction::make(),
             ])
             ->bulkActions([
                 BulkActionGroup::make([

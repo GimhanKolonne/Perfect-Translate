@@ -7,7 +7,7 @@ use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables\Actions\Action;
 use Illuminate\Database\Eloquent\Model;
 
-class RemoveVerifyAction extends Action
+class RemoveClientVerifyAction extends Action
 {
     use cancustomizeprocess;
 

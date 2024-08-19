@@ -17,8 +17,11 @@ class TranslatorController extends Controller
      */
     public function index()
     {
+        $currentUserId = auth()->id();
+
         $translators = Translator::with('user')
-            ->paginate(12)  // Number of items per page
+            ->where('user_id', '!=', $currentUserId)  // Exclude the logged-in user's profile
+            ->paginate(12)
             ->through(function ($translator) {
                 $translator->type_of_translator = json_decode($translator->type_of_translator, true) ?? [];
                 $translator->language_pairs = json_decode($translator->language_pairs, true) ?? [];
@@ -98,6 +101,7 @@ class TranslatorController extends Controller
      */
     public function show(Translator $translator)
     {
+
         return view('translators.show', compact('translator'));
     }
 
@@ -144,19 +148,19 @@ class TranslatorController extends Controller
     {
         try {
             $request->validate([
-                'certificate' => [
+                'certificates.*' => [
                     'required',
                     'file',
                     'mimes:pdf',
-                    'max:5120', // 5MB max file size
+                    'max:5120', // 5MB max file size per file
                     'mimetypes:application/pdf',
                 ],
             ], [
-                'certificate.required' => 'Please select a certificate file to upload.',
-                'certificate.file' => 'The uploaded file is not valid.',
-                'certificate.mimes' => 'The certificate must be a PDF file.',
-                'certificate.max' => 'The certificate file size must not exceed 5MB.',
-                'certificate.mimetypes' => 'The certificate must be a valid PDF document.',
+                'certificates.*.required' => 'Please select certificate files to upload.',
+                'certificates.*.file' => 'The uploaded file is not valid.',
+                'certificates.*.mimes' => 'Each certificate must be a PDF file.',
+                'certificates.*.max' => 'Each certificate file size must not exceed 5MB.',
+                'certificates.*.mimetypes' => 'Each certificate must be a valid PDF document.',
             ]);
 
             $translator = auth()->user()->translator;
@@ -166,19 +170,25 @@ class TranslatorController extends Controller
                 return redirect()->back()->with('error', 'A certificate has already been uploaded. Please contact support to update your certificate.');
             }
 
-            if ($request->file('certificate')) {
-                $path = $request->file('certificate')->store('certificates', 'public');
-                $translator->certificate_path = $path;
+            if ($request->hasfile('certificates')) {
+                $paths = [];
+                foreach ($request->file('certificates') as $file) {
+                    $path = $file->store('certificates', 'public');
+                    $paths[] = $path;
+                }
+
+                // Store paths as a JSON array or another preferred format
+                $translator->certificate_path = json_encode($paths);
                 $translator->verification_status = 'Pending';
                 $translator->save();
 
                 // Send email notification
                 Mail::to($translator->user->email)->send(new CertificateUploadedNotification());
 
-                return redirect()->back()->with('success', 'Certificate uploaded successfully. Your profile is now pending verification.');
+                return redirect()->back()->with('success', 'Certificates uploaded successfully. Your profile is now pending verification.');
             }
 
-            return redirect()->back()->with('error', 'Failed to upload certificate. Please try again.');
+            return redirect()->back()->with('error', 'Failed to upload certificates. Please try again.');
 
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
