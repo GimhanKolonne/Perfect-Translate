@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Application;
 use App\Models\Project;
 use App\Models\Review;
 use App\Http\Requests\StoreReviewRequest;
@@ -21,47 +22,57 @@ class ReviewController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Project $project)
     {
-        //
+        $application = Application::where('project_id', $project->id)
+            ->where('status', 'Completed')
+            ->firstOrFail();
+
+        return view('reviews.create', compact('application', 'project'));
     }
+
+    public function createMethod(Project $project)
+    {
+        $application = Application::where('project_id', $project->id)
+            ->where('status', 'Completed')
+            ->firstOrFail();
+
+        return view('reviews.create.translator', compact('application', 'project'));
+    }
+
 
     /**
      * Store a newly created resource in storage.
      */
 
-    public function store(Request $request)
+    public function store(StoreReviewRequest $request)
     {
+        $validated = $request->validated();
+
+        Review::create($validated);
+
+        $review = new Review();
+        $review->reviewer_id = $validated['reviewer_id'];
+        $review->reviewee_id = $validated['reviewee_id'];
+        $review->project_id = $validated['project_id'];
+        $review->rating = $validated['rating'];
+        $review->review = $validated['review'];
 
 
-        // Validate the request data
-        $validated = $request->validate([
-            'reviewer_id' => 'required|exists:users,id',
-            'reviewee_id' => 'required|exists:users,id',
-            'project_id' => 'required|exists:projects,id',
-            'review' => 'required|string|max:1000',
-            'rating' => 'required|integer|min:1|max:5',
-        ]);
+        $user = auth()->user();
 
-        // Check if a review already exists for the given project by this reviewer
-        $existingReview = Review::where('reviewer_id', $validated['reviewer_id'])
-            ->where('reviewee_id', $validated['reviewee_id'])
-            ->where('project_id', $validated['project_id'])
-            ->exists();
+        $role = $user->role;
 
-        if ($existingReview) {
-            return redirect()->back()->with('flash.banner', 'You have already reviewed this project.');
+
+        if ($role === 'client') {
+            return redirect()->route('projects.index')
+                ->with('flash.banner', 'Reviewed successfully');
+        }
+        else {
+            return redirect()->route('projects.display-projects')
+                ->with('flash.banner', 'Reviewed successfully');
         }
 
-            Review::create([
-            'reviewer_id' => $validated['reviewer_id'],
-            'reviewee_id' => $validated['reviewee_id'],
-            'project_id' => $validated['project_id'],
-            'review' => $validated['review'],
-            'rating' => $validated['rating'],
-        ]);
-
-        return redirect()->back()->with('flash.banner', 'Reviewed Successfully');
     }
 
 
@@ -100,8 +111,14 @@ class ReviewController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Review $review)
+    public function destroy($id)
     {
-        //
+        $review = Review::findOrFail($id);
+
+        // Delete the review
+        $review->delete();
+
+        return redirect()->back()->with('success', 'Review deleted successfully.');
     }
+
 }

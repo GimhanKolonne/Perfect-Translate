@@ -24,7 +24,7 @@ class ProjectController extends Controller
             ->with(['applications' => function ($query) {
                 $query->select('project_id', 'user_id');
             }])
-            ->paginate(10);
+            ->paginate(12);
 
 
 
@@ -32,11 +32,19 @@ class ProjectController extends Controller
 
         $verified = $client->verification_status;
 
+        $reviewedProjectIds = Review::where('reviewer_id', $user->id)
+            ->pluck('project_id')
+            ->toArray();
+
+        // Add 'has_reviewed' attribute to each project
+        $projects->getCollection()->transform(function ($project) use ($reviewedProjectIds) {
+            $project->has_reviewed = in_array($project->id, $reviewedProjectIds);
+            return $project;
+        });
 
 
         return view('projects.index', compact('projects', 'verified'));
     }
-
 
 
     public function projectFilter(Request $request)
@@ -53,6 +61,16 @@ class ProjectController extends Controller
         $verified = $user->client->verification_status;
 
         $projects = $query->paginate(9);
+
+        $reviewedProjectIds = Review::where('reviewer_id', $user->id)
+            ->pluck('project_id')
+            ->toArray();
+
+        // Add 'has_reviewed' attribute to each project
+        $projects->getCollection()->transform(function ($project) use ($reviewedProjectIds) {
+            $project->has_reviewed = in_array($project->id, $reviewedProjectIds);
+            return $project;
+        });
 
         return view('projects.index', [
             'projects' => $projects,
@@ -72,6 +90,10 @@ class ProjectController extends Controller
             ->orderBy('created_at', 'DESC')
             ->withCount('applications')
             ->paginate();
+
+
+
+
 
         return view('projects.display', compact('projects'));
     }
@@ -252,6 +274,19 @@ class ProjectController extends Controller
                 ->where('status', 'Completed');
         })
             ->orderBy('created_at', 'DESC')->paginate();
+
+        $user = auth()->user();
+
+
+        $reviewedProjectIds = Review::where('reviewer_id', $user->id)
+            ->pluck('project_id')
+            ->toArray();
+
+        $projects->getCollection()->transform(function ($project) use ($reviewedProjectIds) {
+            $project->has_reviewed = in_array($project->id, $reviewedProjectIds);
+            return $project;
+        });
+
 
         return view('projects.display', compact('projects'));
     }

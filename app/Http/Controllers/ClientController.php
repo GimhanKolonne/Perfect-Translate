@@ -86,7 +86,11 @@ class ClientController extends Controller
      */
     public function show(Client $client)
     {
-        return view('clients.show', compact('client'));
+
+        $averageRating = $client->reviews()->avg('rating') ?: 0;
+        $reviewCount = $client->reviews()->count();
+
+        return view('clients.show', compact('client','averageRating', 'reviewCount'));
     }
 
     /**

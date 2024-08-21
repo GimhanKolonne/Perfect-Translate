@@ -58,4 +58,10 @@ class Translator extends Model
     {
         return $this->hasMany(Portfolio::class);
     }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class, 'reviewee_id', 'user_id');
+    }
+
 }

@@ -101,9 +101,13 @@ class TranslatorController extends Controller
      */
     public function show(Translator $translator)
     {
+        $averageRating = $translator->reviews()->avg('rating') ?: 0;
+        $reviewCount = $translator->reviews()->count();
 
-        return view('translators.show', compact('translator'));
+        return view('translators.show', compact('translator', 'averageRating', 'reviewCount'));
     }
+
+
 
     /**
      * Show the form for editing the specified resource.

@@ -70,16 +70,23 @@
                                             <a href="{{ route('applications.index', $project->id) }}" class="px-4 py-2 bg-purple-600 text-white text-sm font-medium rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 transition">
                                                 View Applications
                                             </a>
+                                                <a href="{{ route('projects.edit', $project->id) }}" class="px-4 py-2 bg-purple-600 text-white text-sm font-medium rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 transition">
+                                                    Edit
+                                                </a>
                                             @endif
-{{--                                                @if($project->project_status === 'Completed' && !$project->has_reviewed)--}}
-{{--                                                    <button onclick="openModal({{ $project->id }})" class="px-4 py-2 bg-purple-600 text-white text-sm font-medium rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 transition">--}}
-{{--                                                        Review--}}
-{{--                                                    </button>--}}
-{{--                                                @else--}}
-{{--                                                    <p class="px-4 py-2 bg-gray-300 text-gray-800 text-sm font-medium rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 transition">--}}
-{{--                                                        Reviewed--}}
-{{--                                                    </p>--}}
-{{--                                                @endif--}}
+                                                @if($project->project_status === 'Completed')
+                                                    @if(!$project->has_reviewed)
+                                                        <a href="{{ route('reviews.create', $project->id) }}" class="px-4 py-2 bg-purple-600 text-white text-sm font-medium rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 transition">
+                                                            Review
+                                                        </a>
+                                                    @else
+                                                        <p class="px-4 py-2 bg-purple-600 text-white text-sm font-medium rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 transition">
+                                                            Reviewed
+                                                        </p>
+                                                    @endif
+                                                @endif
+
+
                                         </div>
                                     </div>
                                 </div>
@@ -157,6 +164,7 @@
         function closeDeleteModal() {
             document.getElementById('deleteModal').classList.add('hidden');
         }
+
 
     </script>
 </x-app-layout>

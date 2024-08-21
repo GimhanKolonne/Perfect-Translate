@@ -49,6 +49,10 @@ class Client extends Model
         return $this->hasMany(Project::class);
     }
 
-    // Client.php
+    public function reviews()
+    {
+        return $this->hasMany(Review::class, 'reviewee_id', 'user_id');
+    }
+
 
 }
