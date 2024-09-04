@@ -1,7 +1,8 @@
-<x-app-layout>
-    <div class="py-12 bg-gradient-to-r from-purple-200 via-purple-300 to-purple-400 min-h-screen">
+@extends('layouts.client-dashboard')
+
+@section('content')
         <div class="max-w-7xl mx-auto ">
-            <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
+            <div class="bg-white overflow-hidden shadow-xl ">
                 <div class="p-8">
                     <div class="flex justify-between items-center mb-8">
                         <h2 class="text-3xl font-bold text-gray-900">Your Translation Projects</h2>
@@ -167,4 +168,4 @@
 
 
     </script>
-</x-app-layout>
+@endsection

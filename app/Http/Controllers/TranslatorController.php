@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreTranslatorRequest;
 use App\Http\Requests\UpdateTranslatorRequest;
 use App\Mail\CertificateUploadedNotification;
+use App\Models\Review;
 use App\Models\Translator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -35,8 +36,15 @@ class TranslatorController extends Controller
     public function displayProfile($id)
     {
         $translator = Translator::findOrFail($id);
+        $reviews = Review::where('reviewee_id', $translator->user_id)
+            ->with('reviewer')
+            ->latest()
+            ->paginate(3);
 
-        return view('translators.display', compact('translator'));
+        $averageRating = $translator->reviews()->avg('rating') ?: 0;
+        $reviewCount = $translator->reviews()->count();
+
+        return view('translators.display', compact('translator', 'reviews', 'averageRating', 'reviewCount'));
     }
 
     public function create()
@@ -103,11 +111,15 @@ class TranslatorController extends Controller
     {
         $averageRating = $translator->reviews()->avg('rating') ?: 0;
         $reviewCount = $translator->reviews()->count();
+        $reviews = Review::where('reviewee_id', $translator->user_id)
+            ->with('reviewer')
+            ->latest()
+            ->paginate(5);
 
-        return view('translators.show', compact('translator', 'averageRating', 'reviewCount'));
+
+
+        return view('translators.show', compact('translator', 'averageRating', 'reviewCount', 'reviews'));
     }
-
-
 
     /**
      * Show the form for editing the specified resource.

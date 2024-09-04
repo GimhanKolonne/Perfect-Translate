@@ -62,7 +62,8 @@ class PortfolioController extends Controller
     public function edit(Portfolio $portfolio)
     {
         $translator = auth()->user()->translator;
-        return view('portfolios.edit', compact('portfolio','translator'));
+
+        return view('portfolios.edit', compact('portfolio', 'translator'));
     }
 
     public function update(UpdatePortfolioRequest $request, Portfolio $portfolio)

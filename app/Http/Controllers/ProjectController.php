@@ -18,15 +18,12 @@ class ProjectController extends Controller
     {
         $user = auth()->user();
 
-
         $projects = $user->projects()
             ->withCount('applications')
             ->with(['applications' => function ($query) {
                 $query->select('project_id', 'user_id');
             }])
             ->paginate(12);
-
-
 
         $client = $user->client;
 
@@ -39,13 +36,12 @@ class ProjectController extends Controller
         // Add 'has_reviewed' attribute to each project
         $projects->getCollection()->transform(function ($project) use ($reviewedProjectIds) {
             $project->has_reviewed = in_array($project->id, $reviewedProjectIds);
+
             return $project;
         });
 
-
         return view('projects.index', compact('projects', 'verified'));
     }
-
 
     public function projectFilter(Request $request)
     {
@@ -69,6 +65,7 @@ class ProjectController extends Controller
         // Add 'has_reviewed' attribute to each project
         $projects->getCollection()->transform(function ($project) use ($reviewedProjectIds) {
             $project->has_reviewed = in_array($project->id, $reviewedProjectIds);
+
             return $project;
         });
 
@@ -91,10 +88,6 @@ class ProjectController extends Controller
             ->withCount('applications')
             ->paginate();
 
-
-
-
-
         return view('projects.display', compact('projects'));
     }
 
@@ -112,8 +105,6 @@ class ProjectController extends Controller
         $alreadyApplied = Application::where('project_id', $id)
             ->where('user_id', $translator)
             ->exists();
-
-
 
         return view('projects.show', compact('projects', 'user', 'client', 'alreadyApplied'));
 
@@ -277,16 +268,15 @@ class ProjectController extends Controller
 
         $user = auth()->user();
 
-
         $reviewedProjectIds = Review::where('reviewer_id', $user->id)
             ->pluck('project_id')
             ->toArray();
 
         $projects->getCollection()->transform(function ($project) use ($reviewedProjectIds) {
             $project->has_reviewed = in_array($project->id, $reviewedProjectIds);
+
             return $project;
         });
-
 
         return view('projects.display', compact('projects'));
     }

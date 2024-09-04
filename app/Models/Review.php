@@ -2,12 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-
-
-    class Review extends Model
+class Review extends Model
 {
     protected $fillable = [
         'reviewer_id',
@@ -15,7 +12,6 @@ use Illuminate\Database\Eloquent\Model;
         'review',
         'rating',
         'project_id',
-
 
     ];
 
@@ -34,4 +30,3 @@ use Illuminate\Database\Eloquent\Model;
         return $this->belongsTo(Project::class);
     }
 }
-

@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreReviewRequest;
+use App\Http\Requests\UpdateReviewRequest;
 use App\Models\Application;
 use App\Models\Project;
 use App\Models\Review;
-use App\Http\Requests\StoreReviewRequest;
-use App\Http\Requests\UpdateReviewRequest;
-use Illuminate\Http\Request;
 
 class ReviewController extends Controller
 {
@@ -40,11 +39,9 @@ class ReviewController extends Controller
         return view('reviews.create.translator', compact('application', 'project'));
     }
 
-
     /**
      * Store a newly created resource in storage.
      */
-
     public function store(StoreReviewRequest $request)
     {
         $validated = $request->validated();
@@ -58,38 +55,26 @@ class ReviewController extends Controller
         $review->rating = $validated['rating'];
         $review->review = $validated['review'];
 
-
         $user = auth()->user();
 
         $role = $user->role;
 
-
         if ($role === 'client') {
             return redirect()->route('projects.index')
                 ->with('flash.banner', 'Reviewed successfully');
-        }
-        else {
+        } else {
             return redirect()->route('projects.display-projects')
                 ->with('flash.banner', 'Reviewed successfully');
         }
 
     }
 
-
-
-
-
-
-
-
-
-
     /**
      * Display the specified resource.
      */
     public function show(Review $review)
     {
-        //
+        return view('reviews.show');
     }
 
     /**
@@ -120,5 +105,4 @@ class ReviewController extends Controller
 
         return redirect()->back()->with('success', 'Review deleted successfully.');
     }
-
 }

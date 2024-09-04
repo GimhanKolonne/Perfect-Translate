@@ -53,6 +53,4 @@ class Client extends Model
     {
         return $this->hasMany(Review::class, 'reviewee_id', 'user_id');
     }
-
-
 }

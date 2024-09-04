@@ -33,9 +33,6 @@ Route::get('/project/filter', [ProjectController::class, 'filter'])->name('searc
 
 Route::get('/projects/filter', [ProjectController::class, 'projectFilter'])->name('projects.filter');
 
-
-
-
 Route::get('/projects/sent-applications', [ProjectController::class, 'sentApplications'])->name('projects.sent-applications');
 Route::get('/projects/accepted-applications', [ProjectController::class, 'acceptedApplications'])->name('projects.accepted-applications');
 Route::get('/projects/completed-applications', [ProjectController::class, 'completedApplications'])->name('projects.completed-applications');
@@ -62,11 +59,10 @@ Route::get('/projects/{project}/reviews/client', [ReviewController::class, 'crea
 
 Route::get('/projects/{project}/reviews/translator', [ReviewController::class, 'createMethod'])->name('reviews.create.translator');
 
+Route::get('/dashboard', function () {
+    return view('projects.dashboard');
 
-
-
-
-
+})->name('translators_dashboard');
 
 Route::post('/translators/upload-certificate', [TranslatorController::class, 'uploadCertificate'])->name('translators.upload-certificate');
 

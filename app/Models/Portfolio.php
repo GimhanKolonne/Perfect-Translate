@@ -5,9 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-
 /**
  * App\Models\Portfolio
+ *
  * @property int $id
  * @property int $translator_id
  * @property string $title
@@ -19,7 +19,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $detailed_description
  * @property string $status
  */
-
 class Portfolio extends Model
 {
     use HasFactory;

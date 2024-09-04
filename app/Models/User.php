@@ -106,7 +106,8 @@ class User extends Authenticatable
         return $this->hasMany(Review::class, 'reviewee_id');
     }
 
-    public function review(){
+    public function review()
+    {
         return $this->hasOne(Review::class);
     }
 
@@ -114,6 +115,4 @@ class User extends Authenticatable
     {
         return $this->hasMany(Application::class);
     }
-
-
 }

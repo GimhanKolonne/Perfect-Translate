@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * App\Models\Application
+ *
  * @property int $id
  * @property int $project_id
  * @property int $user_id
@@ -18,7 +19,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $status
  * @property string $slug
  */
-
 class Application extends Model
 {
     use HasFactory;

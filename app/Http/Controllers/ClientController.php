@@ -6,6 +6,7 @@ use App\Http\Requests\StoreClientRequest;
 use App\Http\Requests\UpdateClientRequest;
 use App\Mail\DocumentUploadedNotification;
 use App\Models\Client;
+use App\Models\Review;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
@@ -36,8 +37,14 @@ class ClientController extends Controller
     public function displayProfile($id)
     {
         $client = Client::findOrFail($id);
+        $reviews = Review::where('reviewee_id', $client->user_id)
+            ->with('reviewer')
+            ->latest()
+            ->paginate(3);
+        $averageRating = $client->reviews()->avg('rating') ?: 0;
+        $reviewCount = $client->reviews()->count();
 
-        return view('clients.display', compact('client'));
+        return view('clients.display', compact('client', 'reviews', 'averageRating', 'reviewCount'));
     }
 
     public function search(Request $request)
@@ -89,8 +96,12 @@ class ClientController extends Controller
 
         $averageRating = $client->reviews()->avg('rating') ?: 0;
         $reviewCount = $client->reviews()->count();
+        $reviews = Review::where('reviewee_id', $client->user_id)
+            ->with('reviewer')
+            ->latest()
+            ->paginate(5);
 
-        return view('clients.show', compact('client','averageRating', 'reviewCount'));
+        return view('clients.show', compact('client', 'averageRating', 'reviewCount', 'reviews'));
     }
 
     /**

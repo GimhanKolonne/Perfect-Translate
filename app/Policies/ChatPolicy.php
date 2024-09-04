@@ -2,10 +2,11 @@
 
 namespace App\Policies;
 
-use App\Models\Review;
+use App\Models\Chat;
 use App\Models\User;
+use Illuminate\Auth\Access\Response;
 
-class ReviewPolicy
+class ChatPolicy
 {
     /**
      * Determine whether the user can view any models.
@@ -18,7 +19,7 @@ class ReviewPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Review $review): bool
+    public function view(User $user, Chat $chat): bool
     {
         //
     }
@@ -34,7 +35,7 @@ class ReviewPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Review $review): bool
+    public function update(User $user, Chat $chat): bool
     {
         //
     }
@@ -42,7 +43,7 @@ class ReviewPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Review $review): bool
+    public function delete(User $user, Chat $chat): bool
     {
         //
     }
@@ -50,7 +51,7 @@ class ReviewPolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, Review $review): bool
+    public function restore(User $user, Chat $chat): bool
     {
         //
     }
@@ -58,7 +59,7 @@ class ReviewPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, Review $review): bool
+    public function forceDelete(User $user, Chat $chat): bool
     {
         //
     }

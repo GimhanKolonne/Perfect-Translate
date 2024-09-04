@@ -26,7 +26,6 @@ class ApplicationController extends Controller
         $applicationsQuery = Application::with('translator.user')
             ->where('project_id', $projectId);
 
-
         if ($status) {
             $applicationsQuery->where('status', $status);
         }
