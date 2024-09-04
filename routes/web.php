@@ -6,6 +6,7 @@ use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\TranslatorController;
+use App\Livewire\Chat\Index;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -59,10 +60,6 @@ Route::get('/projects/{project}/reviews/client', [ReviewController::class, 'crea
 
 Route::get('/projects/{project}/reviews/translator', [ReviewController::class, 'createMethod'])->name('reviews.create.translator');
 
-Route::get('/dashboard', function () {
-    return view('projects.dashboard');
-
-})->name('translators_dashboard');
 
 Route::post('/translators/upload-certificate', [TranslatorController::class, 'uploadCertificate'])->name('translators.upload-certificate');
 
@@ -78,6 +75,8 @@ Route::get('projects/{projectId}/applications', [ApplicationController::class, '
 Route::patch('/projects/{project}/status', [ProjectController::class, 'updateStatus'])->name('projects.update-status');
 
 Route::get('/portfolios/{id}', [PortfolioController::class, 'show']);
+
+Route::get('/chat',Index::class)->name('chat.index');
 
 Route::middleware([
     'auth:sanctum',
