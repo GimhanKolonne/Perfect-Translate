@@ -6,8 +6,12 @@ use App\Http\Requests\StoreClientRequest;
 use App\Http\Requests\UpdateClientRequest;
 use App\Mail\DocumentUploadedNotification;
 use App\Models\Client;
+use App\Models\Project;
 use App\Models\Review;
+use App\Models\Sprint;
+use App\Notifications\UserTypeNotification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
 
@@ -73,7 +77,6 @@ class ClientController extends Controller
         // Get the validated data
         $validated = $request->validated();
 
-        // Create the slug from the company name or another suitable field
         $validated['slug'] = \Str::slug($validated['company_name'] ?: $validated['contact_name']);
 
         // Create the client
@@ -83,6 +86,8 @@ class ClientController extends Controller
         $user->update(['role' => 'client']);
 
         $client = auth()->user()->client;
+
+        $user->notify(new UserTypeNotification($user->role));
 
         return redirect()->route('home')
             ->with('flash.banner', 'Profile created successfully');
@@ -145,7 +150,7 @@ class ClientController extends Controller
                     'required',
                     'file',
                     'mimes:pdf',
-                    'max:5120', // 5MB max file size per file
+                    'max:5120',
                 ],
             ], [
                 'documents.*.required' => 'Please select document files to upload.',
@@ -184,10 +189,43 @@ class ClientController extends Controller
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
-            // Log the error for debugging
             \Log::error('Document upload error: '.$e->getMessage());
 
             return redirect()->back()->with('error', 'An unexpected error occurred. Please try again later.');
         }
+    }
+
+    public function projectManagement()
+    {
+        $userId = Auth::id();
+
+        $projects = Project::where('user_id', $userId)
+            ->where('project_status', 'In Progress')
+            ->with(['sprints', 'applications.user'])
+            ->paginate(10);
+
+        return view('clients.management', compact('projects'));
+    }
+
+    public function viewSprintProgress($sprintId)
+    {
+        $sprint = Sprint::with('project')->findOrFail($sprintId);
+
+        return view('clients.sprints', compact('sprint'));
+    }
+
+    public function submitFeedback(Request $request, $sprintId)
+    {
+
+
+        $request->validate([
+            'feedback' => 'required|string|max:500',
+        ]);
+
+        $sprint = Sprint::findOrFail($sprintId);
+        $sprint->feedback = $request->feedback;
+        $sprint->save();
+
+        return redirect()->route('client.sprints.progress', $sprintId)->with('success', 'Feedback submitted successfully.');
     }
 }

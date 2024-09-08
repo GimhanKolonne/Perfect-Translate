@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 
 /**
  * App\Models\Projects
@@ -23,6 +24,7 @@ use Illuminate\Database\Eloquent\Model;
 class Project extends Model
 {
     use HasFactory;
+    use Notifiable;
 
     protected $fillable = [
         'project_name',
@@ -45,6 +47,11 @@ class Project extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function translator()
+    {
+        return $this->belongsTo(User::class, 'translator_id');
+    }
+
     public function client()
     {
         return $this->belongsTo(Client::class);
@@ -58,5 +65,10 @@ class Project extends Model
     public function reviews()
     {
         return $this->hasMany(Review::class, 'reviewee_id', 'user_id');
+    }
+
+    public function sprints()
+    {
+        return $this->hasMany(Sprint::class);
     }
 }

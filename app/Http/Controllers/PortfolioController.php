@@ -29,10 +29,8 @@ class PortfolioController extends Controller
     {
         $validated = $request->validated();
 
-        // Ensure translator_id is set
         $validated['translator_id'] = auth()->user()->translator->id;
 
-        // Handle media upload
         $validated['media'] = $this->uploadMedia($request->file('media'));
 
         // Create portfolio
@@ -70,12 +68,10 @@ class PortfolioController extends Controller
     {
         $validated = $request->validated();
 
-        // Handle media upload if there are new files
         if ($request->hasFile('media')) {
             $validated['media'] = $this->uploadMedia($request->file('media'));
         }
 
-        // Ensure translator_id is set if needed
         $validated['translator_id'] = auth()->user()->translator->id;
 
         // Update portfolio

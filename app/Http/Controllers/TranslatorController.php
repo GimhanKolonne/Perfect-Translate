@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateTranslatorRequest;
 use App\Mail\CertificateUploadedNotification;
 use App\Models\Review;
 use App\Models\Translator;
+use App\Notifications\UserTypeNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
@@ -21,7 +22,7 @@ class TranslatorController extends Controller
         $currentUserId = auth()->id();
 
         $translators = Translator::with('user')
-            ->where('user_id', '!=', $currentUserId)  // Exclude the logged-in user's profile
+            ->where('user_id', '!=', $currentUserId)
             ->paginate(12)
             ->through(function ($translator) {
                 $translator->type_of_translator = json_decode($translator->type_of_translator, true) ?? [];
@@ -83,22 +84,21 @@ class TranslatorController extends Controller
      */
     public function store(StoreTranslatorRequest $request)
     {
-        // Get the validated data
         $validated = $request->validated();
 
         $validated['slug'] = \Str::slug($validated['bio']);
 
-        // Serialize arrays
         $validated['type_of_translator'] = json_encode($validated['type_of_translator']);
         $validated['language_pairs'] = json_encode($validated['language_pairs']);
 
-        // Create the translator
         Translator::create($validated);
 
         $user = auth()->user();
         $user->update(['role' => 'translator']);
 
         $translator = auth()->user()->translator;
+
+        $user->notify(new UserTypeNotification($user->role));
 
         return redirect()->route('home')
             ->with('flash.banner', 'Profile created successfully');
@@ -116,8 +116,6 @@ class TranslatorController extends Controller
             ->latest()
             ->paginate(5);
 
-
-
         return view('translators.show', compact('translator', 'averageRating', 'reviewCount', 'reviews'));
     }
 
@@ -126,7 +124,6 @@ class TranslatorController extends Controller
      */
     public function edit(Translator $translator)
     {
-        // Decode JSON strings to arrays
         $translator->type_of_translator = json_decode($translator->type_of_translator, true) ?? [];
         $translator->language_pairs = json_decode($translator->language_pairs, true) ?? [];
 
@@ -142,7 +139,6 @@ class TranslatorController extends Controller
 
         $validated['slug'] = \Str::slug($validated['bio']);
 
-        // Ensure these are arrays before encoding
         $validated['type_of_translator'] = json_encode($validated['type_of_translator'] ?? []);
         $validated['language_pairs'] = json_encode($validated['language_pairs'] ?? []);
 
@@ -168,7 +164,7 @@ class TranslatorController extends Controller
                     'required',
                     'file',
                     'mimes:pdf',
-                    'max:5120', // 5MB max file size per file
+                    'max:5120',
                     'mimetypes:application/pdf',
                 ],
             ], [
@@ -209,7 +205,6 @@ class TranslatorController extends Controller
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
-            // Log the error for debugging
             \Log::error('Certificate upload error: '.$e->getMessage());
 
             return redirect()->back()->with('error', 'An unexpected error occurred. Please try again later.');

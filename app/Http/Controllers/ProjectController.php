@@ -7,6 +7,9 @@ use App\Http\Requests\UpdateProjectRequest;
 use App\Models\Application;
 use App\Models\Project;
 use App\Models\Review;
+use App\Models\Sprint;
+use App\Models\User;
+use App\Notifications\ProjectCreatedNotification;
 use Illuminate\Http\Request;
 
 class ProjectController extends Controller
@@ -33,7 +36,6 @@ class ProjectController extends Controller
             ->pluck('project_id')
             ->toArray();
 
-        // Add 'has_reviewed' attribute to each project
         $projects->getCollection()->transform(function ($project) use ($reviewedProjectIds) {
             $project->has_reviewed = in_array($project->id, $reviewedProjectIds);
 
@@ -62,7 +64,6 @@ class ProjectController extends Controller
             ->pluck('project_id')
             ->toArray();
 
-        // Add 'has_reviewed' attribute to each project
         $projects->getCollection()->transform(function ($project) use ($reviewedProjectIds) {
             $project->has_reviewed = in_array($project->id, $reviewedProjectIds);
 
@@ -79,7 +80,6 @@ class ProjectController extends Controller
     {
         $userId = auth()->id();
 
-        // Get all projects for the authenticated user, including those with and without applications
         $projects = Project::with(['applications' => function ($query) use ($userId) {
             $query->where('user_id', $userId);
         }])
@@ -124,14 +124,18 @@ class ProjectController extends Controller
      */
     public function store(StoreProjectRequest $request)
     {
-
         $validated = $request->validated();
         $validated['slug'] = \Str::slug($validated['project_name']);
-        Project::create($validated);
+        $project = Project::create($validated);
+
+        // Notify all translators
+        $translators = User::where('role', 'translator')->get();
+        foreach ($translators as $translator) {
+            $translator->notify(new ProjectCreatedNotification($project));
+        }
 
         return redirect()->route('projects.index')
             ->with('flash.banner', 'Project created successfully');
-
     }
 
     /**
@@ -167,7 +171,6 @@ class ProjectController extends Controller
      */
     public function destroy(Project $project)
     {
-        //destroy project
         $project->delete();
 
         return redirect()->route('projects.index')
@@ -219,7 +222,6 @@ class ProjectController extends Controller
         // Update project status
         $project->update(['project_status' => $request->status]);
 
-        // If project status is "Completed", update application status
         if ($request->status === 'Completed') {
             $project->applications()->update(['status' => 'Completed']);
 
@@ -279,5 +281,84 @@ class ProjectController extends Controller
         });
 
         return view('projects.display', compact('projects'));
+    }
+
+    public function projectManagement()
+    {
+        $userId = auth()->id();
+
+
+        $projects = Project::whereHas('applications', function ($query) use ($userId) {
+            $query->where('user_id', $userId)
+                ->where('status', 'Accepted');
+        })
+            ->with('sprints.feedback')
+            ->paginate(10);
+
+        return view('projects.management', compact('projects'));
+    }
+
+    public function setSprints(Request $request, Project $project)
+    {
+        if ($project->sprints()->count() > 0) {
+            return redirect()->route('projects.management')->with('error', 'Phases have already been set for this project.');
+        }
+
+        $request->validate([
+            'number_of_sprints' => 'required|integer|min:1',
+        ]);
+
+        // Create sprints for the project
+        for ($i = 1; $i <= $request->number_of_sprints; $i++) {
+            $project->sprints()->create(['sprint_number' => $i]);
+        }
+
+        return redirect()->route('projects.management')->with('success', 'Phases set successfully.');
+    }
+
+    public function updateSprintProgress(Request $request, Sprint $sprint)
+    {
+        $request->validate([
+            'description' => 'required|string|max:255',
+            'progress_document' => 'nullable|file|mimes:pdf|max:2048',
+        ]);
+
+        $path = $sprint->progress_document;
+
+        if ($request->hasFile('progress_document')) {
+            $path = $request->file('progress_document')->store('progress_documents', 'public');
+        }
+
+        $sprint->update([
+            'description' => $request->description,
+            'progress_document' => $path,
+        ]);
+
+        return redirect()->route('projects.management')->with('success', 'Phase progress updated successfully.');
+    }
+
+    public function editSprint(Sprint $sprint)
+    {
+        return view('sprints.edit', compact('sprint'));
+    }
+
+    public function updateSprint(Request $request, Sprint $sprint)
+    {
+        $request->validate([
+            'description' => 'required|string|max:255',
+            'progress_document' => 'nullable|file|mimes:pdf|max:2048',
+        ]);
+
+        $path = $sprint->progress_document;
+
+        if ($request->hasFile('progress_document')) {
+            $path = $request->file('progress_document')->store('progress_documents', 'public');
+        }
+        $sprint->update([
+            'description' => $request->description,
+            'progress_document' => $path,
+        ]);
+
+        return redirect()->route('projects.management')->with('success', 'Phase updated successfully.');
     }
 }

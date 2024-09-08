@@ -1,5 +1,4 @@
-<nav x-data="{ open: false }" class="bg-white border-b border-gray-200 shadow-md">
-    <!-- Primary Navigation Menu -->
+<nav x-data="{ open: false, notificationsOpen: false }" class="bg-white border-b border-gray-200 shadow-md">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16 items-center">
             <div class="flex items-center">
@@ -15,15 +14,17 @@
                             <x-nav-link href="{{ route('translators.show', auth()->user()->translator) }}" :active="request()->routeIs('translators.show')">
                                 {{ __('View Profile') }}
                             </x-nav-link>
+
+
                         @elseif(auth()->user()->role === 'client')
                             <x-nav-link href="{{ route('clients.show', auth()->user()->client) }}" :active="request()->routeIs('clients.show')">
                                 {{ __('View Profile') }}
                             </x-nav-link>
                         @endif
+                            <x-nav-link href="{{ route(auth()->user()->role === 'client' ? 'projects.index' : 'projects.display-projects') }}" :active="request()->routeIs('projects.index') || request()->routeIs('projects.display-projects')">
+                                {{ __('Dashboard') }}
+                            </x-nav-link>
 
-                        <x-nav-link href="{{ route(auth()->user()->role === 'client' ? 'projects.index' : 'projects.display-projects') }}" :active="request()->routeIs('projects.index') || request()->routeIs('projects.display-projects')">
-                            {{ __('Dashboard') }}
-                        </x-nav-link>
 
                         <x-nav-link href="{{ route('translators.index') }}" :active="request()->routeIs('translators.index')">
                             {{ __('Find Translators') }}
@@ -40,46 +41,21 @@
 
             @auth
                 <div class="hidden sm:flex sm:items-center sm:ml-6">
-                    <!-- Teams Dropdown -->
-                    @if (Laravel\Jetstream\Jetstream::hasTeamFeatures())
-                        <div class="relative">
-                            <x-dropdown align="right" width="60">
-                                <x-slot name="trigger">
-                                    <button class="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 focus:outline-none transition">
-                                        {{ Auth::user()->currentTeam->name }}
-                                        <svg class="ml-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
-                                        </svg>
-                                    </button>
-                                </x-slot>
+                    <!-- Notification Dropdown -->
+                    <div class="relative" @click.away="notificationsOpen = false">
+                        <button @click="notificationsOpen = !notificationsOpen" class="flex items-center px-16 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 focus:outline-none transition">
+                            Notifications
+                            <svg class="ml-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7 7 7-7H5z" />
+                            </svg>
+                        </button>
 
-                                <x-slot name="content">
-                                    <div class="w-60">
-                                        <div class="block px-4 py-2 text-xs text-gray-400">
-                                            {{ __('Manage Team') }}
-                                        </div>
-                                        <x-dropdown-link href="{{ route('teams.show', Auth::user()->currentTeam->id) }}">
-                                            {{ __('Team Settings') }}
-                                        </x-dropdown-link>
-                                        @can('create', Laravel\Jetstream\Jetstream::newTeamModel())
-                                            <x-dropdown-link href="{{ route('teams.create') }}">
-                                                {{ __('Create New Team') }}
-                                            </x-dropdown-link>
-                                        @endcan
-                                        @if (Auth::user()->allTeams()->count() > 1)
-                                            <div class="border-t border-gray-200"></div>
-                                            <div class="block px-4 py-2 text-xs text-gray-400">
-                                                {{ __('Switch Teams') }}
-                                            </div>
-                                            @foreach (Auth::user()->allTeams() as $team)
-                                                <x-switchable-team :team="$team" />
-                                            @endforeach
-                                        @endif
-                                    </div>
-                                </x-slot>
-                            </x-dropdown>
+                        <div x-show="notificationsOpen" class="absolute right-0 z-10 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5" x-cloak>
+                            <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                                @livewire('UserNotifications')
+                            </div>
                         </div>
-                    @endif
+                    </div>
 
                     <!-- Settings Dropdown -->
                     <div class="relative">

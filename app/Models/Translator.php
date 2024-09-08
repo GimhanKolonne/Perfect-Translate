@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 
 /**
  * App\Models\Translator
@@ -22,6 +23,7 @@ use Illuminate\Database\Eloquent\Model;
 class Translator extends Model
 {
     use HasFactory;
+    use Notifiable;
 
     protected $fillable = [
         'type_of_translator',

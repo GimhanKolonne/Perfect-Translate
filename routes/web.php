@@ -6,7 +6,6 @@ use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\TranslatorController;
-use App\Livewire\Chat\Index;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -61,6 +60,7 @@ Route::get('/projects/{project}/reviews/client', [ReviewController::class, 'crea
 Route::get('/projects/{project}/reviews/translator', [ReviewController::class, 'createMethod'])->name('reviews.create.translator');
 
 
+
 Route::post('/translators/upload-certificate', [TranslatorController::class, 'uploadCertificate'])->name('translators.upload-certificate');
 
 Route::get('/projects/{project}/applications', [ApplicationController::class, 'showApplications'])->name('applications.index');
@@ -76,7 +76,20 @@ Route::patch('/projects/{project}/status', [ProjectController::class, 'updateSta
 
 Route::get('/portfolios/{id}', [PortfolioController::class, 'show']);
 
-Route::get('/chat',Index::class)->name('chat.index');
+Route::get('/notifications', [\App\Http\Controllers\NotificationController::class, 'index']);
+
+Route::get('/project/management', [ProjectController::class, 'projectManagement'])->name('projects.management');
+Route::post('/projects/{project}/set-sprints', [ProjectController::class, 'setSprints'])->name('projects.setSprints');
+Route::post('/sprints/{sprint}/update-progress', [ProjectController::class, 'updateSprintProgress'])->name('sprints.updateProgress');
+
+Route::get('/sprints/{sprint}/edit', [ProjectController::class, 'editSprint'])->name('sprints.edit');
+Route::post('/sprints/{sprint}/update', [ProjectController::class, 'updateSprint'])->name('sprints.update');
+
+Route::get('/client/projects', [ClientController::class, 'projectManagement'])->name('client.projects.management');
+Route::get('/client/sprints/{sprintId}/progress', [ClientController::class, 'viewSprintProgress'])->name('client.sprints.progress');
+
+Route::post('/client/sprints/{sprintId}/feedback', [ClientController::class, 'submitFeedback'])->name('client.sprints.feedback');
+
 
 Route::middleware([
     'auth:sanctum',
