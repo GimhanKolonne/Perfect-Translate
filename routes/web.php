@@ -1,12 +1,15 @@
 <?php
 
 use App\Http\Controllers\ApplicationController;
+use App\Http\Controllers\ChatController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\TranslatorController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Broadcast;
+
 
 Route::get('/', function () {
     return view('dashboard');
@@ -90,6 +93,10 @@ Route::get('/client/sprints/{sprintId}/progress', [ClientController::class, 'vie
 
 Route::post('/client/sprints/{sprintId}/feedback', [ClientController::class, 'submitFeedback'])->name('client.sprints.feedback');
 
+Route::get('/chat/{projectId}', [ChatController::class, 'index'])->name('chat.index');
+
+Route::post('/send-message', [ChatController::class, 'sendMessage'])->middleware('auth');
+Route::get('/fetch-messages', [ChatController::class, 'fetchMessages']);
 
 Route::middleware([
     'auth:sanctum',
@@ -100,3 +107,4 @@ Route::middleware([
         return view('dashboard');
     })->name('dashboard');
 });
+

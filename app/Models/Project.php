@@ -71,4 +71,8 @@ class Project extends Model
     {
         return $this->hasMany(Sprint::class);
     }
+    public function chatMessages()
+    {
+        return $this->hasMany(ChatMessage::class);
+    }
 }

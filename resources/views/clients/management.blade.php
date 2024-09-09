@@ -41,10 +41,14 @@
                                             @endif
                                         </span>
                                         <a href="{{ route('client.sprints.progress', $sprint->id) }}" class="text-blue-600 hover:underline">View Progress</a>
+
                                     </div>
+
                                 @endforeach
                             </td>
                             <td class="py-3 px-4 border-b text-sm text-gray-800">
+                                <a href="{{ route('chat.index', $project->id) }}" class="bg-green-600 text-white px-4 py-1 rounded-md hover:bg-green-700">Chat</a> <!-- Chat Button -->
+
                             </td>
                         </tr>
                     @endforeach
