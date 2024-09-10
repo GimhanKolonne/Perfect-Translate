@@ -1,6 +1,6 @@
 <x-app-layout>
     <div class="bg-gradient-to-br from-purple-100 to-indigo-100 min-h-screen pb-12">
-        <div class="h-64 bg-gradient-to-r from-purple-600 via-purple-500 to-indigo-500"></div>
+        <div class="h-64 bg-purple-700"></div>
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="relative -mt-32">

@@ -1,8 +1,7 @@
 <x-app-layout>
     <div class="bg-gray-100 min-h-screen pb-12">
         <!-- Hero Section -->
-        <div class="h-64 bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600 bg-cover bg-center relative">
-            <div class="absolute inset-0 bg-black opacity-50"></div>
+        <div class="h-64 bg-purple-700 bg-cover bg-center relative">
             <div class="absolute inset-0 flex items-center justify-center">
             </div>
         </div>

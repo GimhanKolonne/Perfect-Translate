@@ -20,7 +20,10 @@ Route::get('/translator/profile/{id}', [TranslatorController::class, 'displayPro
 
 Route::get('/client/profile/{id}', [ClientController::class, 'displayProfile'])->name('clients.display-profile');
 
-Route::get('/display/projects', [ProjectController::class, 'displayProjects'])->name('projects.display-projects');
+Route::get('/translators/dashboard', [ProjectController::class, 'displayProjects'])->name('projects.display-projects');
+
+Route::get('/display/projects', [ProjectController::class, 'dashboard'])->name('projects.find-work');
+
 
 Route::get('/view/projects/{id}', [ProjectController::class, 'viewProjects'])->name('projects.view-projects');
 
@@ -93,10 +96,29 @@ Route::get('/client/sprints/{sprintId}/progress', [ClientController::class, 'vie
 
 Route::post('/client/sprints/{sprintId}/feedback', [ClientController::class, 'submitFeedback'])->name('client.sprints.feedback');
 
-Route::get('/chat/{projectId}', [ChatController::class, 'index'])->name('chat.index');
+Route::get('/chat/{projectId}', [ChatController::class, 'index'])
+    ->name('chat.index')
+    ->middleware(['auth', 'belongs.to.project']);
 
-Route::post('/send-message', [ChatController::class, 'sendMessage'])->middleware('auth');
-Route::get('/fetch-messages/{projectId}', [ChatController::class, 'fetchMessages']);
+Route::post('/chat/send-message', [ChatController::class, 'sendMessage'])
+    ->name('chat.send')
+    ->middleware('auth');
+
+Route::get('/chat/{projectId}/messages', [ChatController::class, 'fetchMessages'])
+    ->name('chat.fetch')
+    ->middleware(['auth', 'belongs.to.project']);
+
+Route::post('/chat/{projectId}/upload', [ChatController::class, 'uploadFile'])
+    ->name('chat.upload')
+    ->middleware(['auth', 'belongs.to.project']);
+
+Route::get('/chat/{projectId}/files', [ChatController::class, 'getProjectFiles'])
+    ->name('chat.files')
+    ->middleware(['auth', 'belongs.to.project']);
+
+Route::delete('/chat/files/{fileId}', [ChatController::class, 'deleteFile'])
+    ->name('chat.deleteFile')
+    ->middleware('auth');
 
 Route::middleware([
     'auth:sanctum',

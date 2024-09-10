@@ -4,17 +4,28 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
+use App\Models\Project;
+use App\Models\Application;
 
 class EnsureUserBelongsToProject
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next)
     {
+        $projectId = $request->route('projectId');
+        $user = auth()->user();
+
+        $projectBelongsToUser = Project::where('id', $projectId)
+            ->where('user_id', $user->id)
+            ->exists();
+
+        $userHasApplication = Application::where('project_id', $projectId)
+            ->where('user_id', $user->id)
+            ->exists();
+
+        if (!$projectBelongsToUser && !$userHasApplication) {
+            abort(403, 'Unauthorized action.');
+        }
+
         return $next($request);
     }
 }

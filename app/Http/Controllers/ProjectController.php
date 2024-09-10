@@ -76,7 +76,7 @@ class ProjectController extends Controller
         ]);
     }
 
-    public function displayProjects()
+    public function dashboard()
     {
         $userId = auth()->id();
 
@@ -88,7 +88,24 @@ class ProjectController extends Controller
             ->withCount('applications')
             ->paginate();
 
+        return view('projects.find_work', compact('projects'));
+    }
+
+    public function displayProjects()
+    {
+
+        $userId = auth()->id();
+
+        $projects = Project::whereHas('applications', function ($query) use ($userId) {
+            $query->where('user_id', $userId)
+                ->where('status', 'Pending');
+        })
+            ->withCount('applications')
+            ->orderBy('created_at', 'DESC')
+            ->paginate();
+
         return view('projects.display', compact('projects'));
+
     }
 
     public function viewProjects($id)
@@ -183,7 +200,7 @@ class ProjectController extends Controller
         $search = $request->search;
 
         if (empty($search)) {
-            return redirect()->route('projects.display-projects');
+            return redirect()->route('projects.find-work');
         }
 
         $query = Project::query();
@@ -192,7 +209,7 @@ class ProjectController extends Controller
 
         $projects = $query->paginate();
 
-        return view('projects.display', compact('projects'));
+        return view('projects.find_work', compact('projects'));
     }
 
     public function filter(Request $request)
@@ -202,14 +219,14 @@ class ProjectController extends Controller
         $target_language = $request->target_language;
 
         if (empty($original_language) || empty($target_language)) {
-            return redirect()->route('projects.display-projects');
+            return redirect()->route('projects.find-work');
         }
 
         $projects = Project::where('original_language', $original_language)
             ->where('target_language', $target_language)
             ->paginate();
 
-        return view('projects.display', compact('projects'));
+        return view('projects.find_work', compact('projects'));
 
     }
 

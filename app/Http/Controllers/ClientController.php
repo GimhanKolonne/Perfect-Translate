@@ -226,6 +226,6 @@ class ClientController extends Controller
         $sprint->feedback = $request->feedback;
         $sprint->save();
 
-        return redirect()->route('client.sprints.progress', $sprintId)->with('success', 'Feedback submitted successfully.');
+        return redirect()->route('client.projects.management', $sprintId)->with('success', 'Feedback submitted successfully.');
     }
 }

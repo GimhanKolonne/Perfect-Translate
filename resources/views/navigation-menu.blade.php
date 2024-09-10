@@ -14,6 +14,9 @@
                             <x-nav-link href="{{ route('translators.show', auth()->user()->translator) }}" :active="request()->routeIs('translators.show')">
                                 {{ __('View Profile') }}
                             </x-nav-link>
+                            <x-nav-link href="{{ route('projects.find-work') }}" :active="request()->routeIs('projects.find-work')">
+                                {{ __('Find Work') }}
+                            </x-nav-link>
 
 
                         @elseif(auth()->user()->role === 'client')
@@ -24,6 +27,9 @@
                             <x-nav-link href="{{ route(auth()->user()->role === 'client' ? 'projects.index' : 'projects.display-projects') }}" :active="request()->routeIs('projects.index') || request()->routeIs('projects.display-projects')">
                                 {{ __('Dashboard') }}
                             </x-nav-link>
+
+
+
 
 
                         <x-nav-link href="{{ route('translators.index') }}" :active="request()->routeIs('translators.index')">
