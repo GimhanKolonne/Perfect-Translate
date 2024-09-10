@@ -18,12 +18,17 @@ class ChatController extends Controller
 
         $project_name = Project::find($projectId)->project_name;
 
+        $project = Project::find($projectId);
+        $project_user_id = $project->user_id;
+
         return view('chat.index', [
             'projectId' => $projectId,
             'pusherKey' => config('broadcasting.connections.pusher.key'),
             'pusherCluster' => config('broadcasting.connections.pusher.options.cluster'),
             'messages' => $messages,
-            'project_name' => $project_name
+            'project_name' => $project_name,
+            'user_id' => $project_user_id
+
         ]);
     }
 
@@ -59,8 +64,7 @@ class ChatController extends Controller
     public function fetchMessages($projectId)
     {
         return Message::where('project_id', $projectId)
-            ->orderBy('created_at', 'desc')
-            ->take(10)
+            ->orderBy('created_at', 'asc')
             ->get();
     }
 }

@@ -96,7 +96,7 @@ Route::post('/client/sprints/{sprintId}/feedback', [ClientController::class, 'su
 Route::get('/chat/{projectId}', [ChatController::class, 'index'])->name('chat.index');
 
 Route::post('/send-message', [ChatController::class, 'sendMessage'])->middleware('auth');
-Route::get('/fetch-messages', [ChatController::class, 'fetchMessages']);
+Route::get('/fetch-messages/{projectId}', [ChatController::class, 'fetchMessages']);
 
 Route::middleware([
     'auth:sanctum',
