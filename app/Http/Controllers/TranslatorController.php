@@ -7,9 +7,12 @@ use App\Http\Requests\UpdateTranslatorRequest;
 use App\Mail\CertificateUploadedNotification;
 use App\Models\Review;
 use App\Models\Translator;
+use App\Models\User;
+use App\Notifications\AdminNotificationForVerificationNotification;
 use App\Notifications\UserTypeNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Validation\ValidationException;
 
 class TranslatorController extends Controller
@@ -98,7 +101,8 @@ class TranslatorController extends Controller
 
         $translator = auth()->user()->translator;
 
-        $user->notify(new UserTypeNotification($user->role));
+        $userId = $translator->user_id;
+        $user->notify(new UserTypeNotification('translator', $userId));
 
         return redirect()->route('home')
             ->with('flash.banner', 'Profile created successfully');
@@ -194,8 +198,12 @@ class TranslatorController extends Controller
                 $translator->verification_status = 'Pending';
                 $translator->save();
 
-                // Send email notification
+                // Send email notification to the translator
                 Mail::to($translator->user->email)->send(new CertificateUploadedNotification());
+
+                // Get admin users and send notifications
+                $adminUsers = User::where('role', 'admin')->get();
+                Notification::send($adminUsers, new AdminNotificationForVerificationNotification(auth()->user(), $translator->certificate_path));
 
                 return redirect()->back()->with('success', 'Certificates uploaded successfully. Your profile is now pending verification.');
             }
@@ -205,7 +213,7 @@ class TranslatorController extends Controller
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
-            \Log::error('Certificate upload error: '.$e->getMessage());
+            \Log::error('Certificate upload error: ' . $e->getMessage());
 
             return redirect()->back()->with('error', 'An unexpected error occurred. Please try again later.');
         }

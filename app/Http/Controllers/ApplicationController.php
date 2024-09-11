@@ -8,6 +8,7 @@ use App\Mail\ApplicationAccepted;
 use App\Mail\ApplicationDeclined;
 use App\Models\Application;
 use App\Models\Project;
+use App\Notifications\ApplicationNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
@@ -88,7 +89,10 @@ class ApplicationController extends Controller
         }
 
         // Create the application
-        Application::create($validated);
+        $application = Application::create($validated);
+
+        $client = $application->project->user;
+        $client->notify(new ApplicationNotification($application));
 
         return redirect()->route('projects.display-projects')
             ->with('flash.banner', 'Application sent');

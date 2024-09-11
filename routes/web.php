@@ -120,6 +120,8 @@ Route::delete('/chat/files/{fileId}', [ChatController::class, 'deleteFile'])
     ->name('chat.deleteFile')
     ->middleware('auth');
 
+Route::post('/notifications/{id}/mark-as-read', 'NotificationController@markAsRead')->name('notifications.markAsRead');
+
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),

@@ -28,6 +28,7 @@ class ProjectCreatedNotification extends Notification
             'body' => 'A new project named "'.$this->project->project_name.'" has been created.',
             'message' => 'Check it out!',
             'project_id' => $this->project->id,
+            'project_url' => route('projects.view-projects', ['id' => $this->project->id]), // Link to project details
         ];
     }
 }

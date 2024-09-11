@@ -9,10 +9,13 @@ use App\Models\Client;
 use App\Models\Project;
 use App\Models\Review;
 use App\Models\Sprint;
+use App\Models\User;
+use App\Notifications\AdminNotificationForVerificationNotification;
 use App\Notifications\UserTypeNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Validation\ValidationException;
 
 class ClientController extends Controller
@@ -87,7 +90,8 @@ class ClientController extends Controller
 
         $client = auth()->user()->client;
 
-        $user->notify(new UserTypeNotification($user->role));
+        $userId = $client->user_id;
+        $user->notify(new UserTypeNotification('client', $userId));
 
         return redirect()->route('home')
             ->with('flash.banner', 'Profile created successfully');
@@ -180,6 +184,9 @@ class ClientController extends Controller
 
                 // Send email notification
                 Mail::to($client->user->email)->send(new DocumentUploadedNotification());
+                $adminUsers = User::where('role', 'admin')->get();
+                Notification::send($adminUsers, new AdminNotificationForVerificationNotification(auth()->user(), $client->document_path));
+
 
                 return redirect()->back()->with('success', 'Documents uploaded successfully. Your profile is now pending verification.');
             }
