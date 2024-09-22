@@ -211,6 +211,8 @@ class ClientController extends Controller
             ->with(['sprints', 'applications.user'])
             ->paginate(10);
 
+
+
         return view('clients.management', compact('projects'));
     }
 

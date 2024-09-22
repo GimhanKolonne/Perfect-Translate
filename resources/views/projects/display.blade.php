@@ -10,7 +10,7 @@
                             <div class="flex justify-between items-start mb-4">
                                 <h3 class="text-2xl font-bold text-purple-800 mb-2">{{ $project->project_name }}</h3>
                                 <span class="px-4 py-2 bg-purple-600 text-white text-sm font-bold rounded-full">
-                                රු{{ number_format($project->project_budget, 2) }}
+                                Rs{{ number_format($project->project_budget, 2) }}
                             </span>
                             </div>
                             <p class="text-base text-purple-600 mb-4">{{ Str::limit($project->project_description, 100) }}</p>
@@ -58,7 +58,6 @@
             <div class="mt-12">
                 {{ $projects->links() }}
             </div>
-        </div>
-    </div>
+
 @endsection
 

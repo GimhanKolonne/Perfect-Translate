@@ -55,7 +55,6 @@
                             <h3 class="text-lg font-medium text-gray-900 mb-2">{{ __('Availability') }}</h3>
                             <span class="text-gray-700">{{ $translator->availability }}</span>
                         </div>
-
                         <div class="px-6 py-5 text-sm font-medium text-center">
                             <h3 class="text-gray-700">{{ __('Average Rating') }}</h3>
                             @if($reviewCount > 0)
@@ -164,7 +163,7 @@
                         @if($translator->verification_status === 'Not Verified')
                             <div class="bg-white shadow-lg rounded-lg p-6 border border-gray-200">
                                 <h3 class="text-lg font-medium text-gray-900 mb-4">{{ __('Upload Certificates') }}</h3>
-                                <form action="{{ route('translators.upload-certificate') }}" method="POST" enctype="multipart/form-data" onsubmit="return validateFileInput()">
+                                <form id="certificateForm" action="{{ route('translators.upload-certificate') }}" method="POST" enctype="multipart/form-data">
                                     @csrf
                                     <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
                                         <div class="space-y-1 text-center">
@@ -173,17 +172,21 @@
                                             </svg>
                                             <div class="flex text-sm text-gray-600">
                                                 <label for="file-upload" class="relative cursor-pointer bg-white rounded-md font-medium text-purple-600 hover:text-purple-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-purple-500">
-                                                    <span>{{ __('Upload a file') }}</span>
+                                                    <span>{{ __('Upload files') }}</span>
                                                     <input id="file-upload" name="certificates[]" type="file" class="sr-only" multiple accept=".pdf">
                                                 </label>
                                                 <p class="pl-1">{{ __('or drag and drop') }}</p>
                                             </div>
-                                            <p class="text-xs text-gray-500">{{ __('PDF up to 10MB') }}</p>
+                                            <p class="text-xs text-gray-500">{{ __('PDF up to 10MB each') }}</p>
                                         </div>
                                     </div>
+                                    <div id="file-list" class="mt-2"></div>
                                     <div id="file-error" class="hidden mt-2 text-sm text-red-600"></div>
-                                    <div class="mt-5">
-                                        <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition duration-150 ease-in-out">
+                                    <div class="mt-5 flex justify-between">
+                                        <button type="button" id="cancelUpload" class="w-1/2 mr-2 flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition duration-150 ease-in-out">
+                                            {{ __('Cancel') }}
+                                        </button>
+                                        <button type="submit" id="uploadButton" class="w-1/2 ml-2 flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition duration-150 ease-in-out">
                                             {{ __('Upload Certificates') }}
                                         </button>
                                     </div>
@@ -268,23 +271,67 @@
         </div>
     </div>
 
-
-
-
-
     <script>
-        function validateFileInput() {
-            const fileInput = document.getElementById('file-upload');
-            const errorDiv = document.getElementById('file-error');
+        const fileInput = document.getElementById('file-upload');
+        const fileList = document.getElementById('file-list');
+        const fileError = document.getElementById('file-error');
+        const cancelUpload = document.getElementById('cancelUpload');
+        const uploadButton = document.getElementById('uploadButton');
+        const certificateForm = document.getElementById('certificateForm');
+
+        fileInput.addEventListener('change', updateFileList);
+        cancelUpload.addEventListener('click', resetForm);
+        certificateForm.addEventListener('submit', validateForm);
+
+        function updateFileList() {
+            fileList.innerHTML = '';
+            fileError.classList.add('hidden');
+
+            if (fileInput.files.length > 0) {
+                for (let i = 0; i < fileInput.files.length; i++) {
+                    const file = fileInput.files[i];
+                    const fileSize = (file.size / 1024 / 1024).toFixed(2);
+                    const listItem = document.createElement('div');
+                    listItem.className = 'text-sm text-gray-600';
+                    listItem.textContent = `${file.name} (${fileSize} MB)`;
+                    fileList.appendChild(listItem);
+                }
+            }
+        }
+
+        function resetForm() {
+            certificateForm.reset();
+            fileList.innerHTML = '';
+            fileError.classList.add('hidden');
+        }
+
+        function validateForm(event) {
+            event.preventDefault();
+            fileError.classList.add('hidden');
 
             if (fileInput.files.length === 0) {
-                errorDiv.textContent = 'Please select at least one file to upload.';
-                errorDiv.classList.remove('hidden');
-                return false;
+                showError('Please select at least one file to upload.');
+                return;
             }
 
-            errorDiv.classList.add('hidden');
-            return true;
+            for (let i = 0; i < fileInput.files.length; i++) {
+                const file = fileInput.files[i];
+                if (file.size > 10 * 1024 * 1024) {
+                    showError(`File "${file.name}" exceeds the 10MB limit.`);
+                    return;
+                }
+                if (!file.name.toLowerCase().endsWith('.pdf')) {
+                    showError(`File "${file.name}" is not a PDF.`);
+                    return;
+                }
+            }
+
+            certificateForm.submit();
+        }
+
+        function showError(message) {
+            fileError.textContent = message;
+            fileError.classList.remove('hidden');
         }
 
         function openReviewsModal() {

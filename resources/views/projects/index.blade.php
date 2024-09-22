@@ -42,7 +42,7 @@
                                     <div class="flex justify-between items-start mb-4">
                                         <h3 class="text-xl font-semibold text-gray-900 mb-2">{{ $project->project_name }}</h3>
                                         <span class="px-3 py-1 bg-purple-100 text-purple-800 text-xs font-semibold rounded-full">
-                                            රු{{ number_format($project->project_budget, 2) }}
+                                            Rs{{ number_format($project->project_budget, 2) }}
                                         </span>
                                     </div>
                                     <p class="text-sm text-gray-600 mb-4">{{ Str::limit($project->project_description, 100) }}</p>
@@ -77,11 +77,11 @@
                                             @endif
                                                 @if($project->project_status === 'Completed')
                                                     @if(!$project->has_reviewed)
-                                                        <a href="{{ route('reviews.create', $project->id) }}" class="px-4 py-2 bg-purple-600 text-white text-sm font-medium rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 transition">
+                                                        <a href="{{ route('reviews.create', ['project' => $project->id]) }}" class="px-4 py-2 bg-purple-600 text-white text-sm font-medium rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 transition">
                                                             Review
                                                         </a>
                                                     @else
-                                                        <p class="px-4 py-2 bg-purple-600 text-white text-sm font-medium rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 transition">
+                                                        <p class="px-6 py-2 bg-green-500 text-white text-sm font-semibold rounded-lg">
                                                             Reviewed
                                                         </p>
                                                     @endif
@@ -92,7 +92,7 @@
                                     </div>
                                 </div>
                                 <div class="bg-gray-50 px-6 py-4">
-                                    @if($project->project_status !== 'Completed')
+{{--                                    @if($project->project_status !== 'Completed')--}}
 
                                     <form action="{{ route('projects.update-status', $project->id) }}" method="POST" class="flex items-center justify-between">
                                         @csrf
@@ -108,7 +108,7 @@
                                             Update
                                         </button>
                                     </form>
-                                    @endif
+{{--                                    @endif--}}
                                     <button onclick="openDeleteModal({{ $project->id }})" class="mt-2 w-full px-4 py-2 bg-red-500 text-white text-sm font-medium rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 transition">
                                         Delete
                                     </button>

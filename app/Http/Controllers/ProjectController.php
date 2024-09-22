@@ -9,8 +9,10 @@ use App\Models\Project;
 use App\Models\Review;
 use App\Models\Sprint;
 use App\Models\User;
+use App\Notifications\ProjectCompletedNotification;
 use App\Notifications\ProjectCreatedNotification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProjectController extends Controller
 {
@@ -203,11 +205,14 @@ class ProjectController extends Controller
             return redirect()->route('projects.find-work');
         }
 
-        $query = Project::query();
+        $query = Project::query()
+            ->where('project_status', 'Pending')
+            ->orderBy('created_at', 'DESC');
 
         $query->whereAny(['project_name', 'project_domain', 'original_language', 'target_language'], 'LIKE', "%$search%");
 
         $projects = $query->paginate();
+
 
         return view('projects.find_work', compact('projects'));
     }
@@ -224,6 +229,7 @@ class ProjectController extends Controller
 
         $projects = Project::where('original_language', $original_language)
             ->where('target_language', $target_language)
+            ->where('project_status', 'Pending')
             ->paginate();
 
         return view('projects.find_work', compact('projects'));
@@ -268,7 +274,8 @@ class ProjectController extends Controller
 
         $projects = Project::whereHas('applications', function ($query) use ($userId) {
             $query->where('user_id', $userId)
-                ->where('status', 'Accepted');
+                ->where('status', 'Accepted')
+                ->where('project_status', 'In Progress');
         })
             ->orderBy('created_at', 'DESC')->paginate();
 
@@ -281,7 +288,7 @@ class ProjectController extends Controller
 
         $projects = Project::whereHas('applications', function ($query) use ($userId) {
             $query->where('user_id', $userId)
-                ->where('status', 'Completed');
+                ->where('project_status', 'Completed');
         })
             ->orderBy('created_at', 'DESC')->paginate();
 
@@ -307,7 +314,8 @@ class ProjectController extends Controller
 
         $projects = Project::whereHas('applications', function ($query) use ($userId) {
             $query->where('user_id', $userId)
-                ->where('status', 'Accepted');
+                ->where('status', 'Accepted')
+                ->where('project_status', 'In Progress');
         })
             ->with('sprints.feedback')
             ->paginate(10);
@@ -378,4 +386,27 @@ class ProjectController extends Controller
 
         return redirect()->route('projects.management')->with('success', 'Phase updated successfully.');
     }
+    public function completeProject(Project $project)
+    {
+        // Check if the authenticated user is the owner of the project
+        if (Auth::id() !== $project->user_id) {
+            return redirect()->back()->with('error', 'You do not have permission to complete this project.');
+        }
+
+        // Update project status to 'Completed'
+        $project->update(['project_status' => 'Completed']);
+
+        // Notify the client
+        $client = $project->user;
+        $client->notify(new ProjectCompletedNotification($project));
+
+        $translators = $project->applications()->with('user')->get()->pluck('user');
+        foreach ($translators as $translator) {
+            $translator->notify(new ProjectCompletedNotification($project));
+        }
+
+        return redirect()->route('projects.index')->with('flash.banner', 'Project marked as completed.');
+    }
+
+
 }

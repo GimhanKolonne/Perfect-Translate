@@ -61,10 +61,8 @@ Route::resource('portfolios', \App\Http\Controllers\PortfolioController::class)
 Route::resource('reviews', \App\Http\Controllers\ReviewController::class)
     ->middleware(['auth', 'verified']);
 
-Route::get('/projects/{project}/reviews/client', [ReviewController::class, 'create'])->name('reviews.create');
-
+Route::get('/projects/{project}/reviews/client', [ReviewController::class, 'createReview'])->name('reviews.create');
 Route::get('/projects/{project}/reviews/translator', [ReviewController::class, 'createMethod'])->name('reviews.create.translator');
-
 
 
 Route::post('/translators/upload-certificate', [TranslatorController::class, 'uploadCertificate'])->name('translators.upload-certificate');
@@ -120,7 +118,7 @@ Route::delete('/chat/files/{fileId}', [ChatController::class, 'deleteFile'])
     ->name('chat.deleteFile')
     ->middleware('auth');
 
-Route::post('/notifications/{id}/mark-as-read', 'NotificationController@markAsRead')->name('notifications.markAsRead');
+Route::patch('/projects/{project}/complete', [ProjectController::class, 'completeProject'])->name('client.projects.complete');
 
 Route::middleware([
     'auth:sanctum',

@@ -155,7 +155,7 @@
                         @if($client->verification_status === 'Not Verified')
                             <div class="bg-white shadow-lg rounded-lg p-6 border border-gray-200 transition duration-300 ease-in-out hover:shadow-xl">
                                 <h3 class="text-xl font-semibold text-gray-900 mb-4">{{ __('Upload Business Registration') }}</h3>
-                                <form action="{{ route('clients.upload-document') }}" method="POST" enctype="multipart/form-data" onsubmit="return validateFileInput()">
+                                <form id="uploadForm" action="{{ route('clients.upload-document') }}" method="POST" enctype="multipart/form-data">
                                     @csrf
                                     <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
                                         <div class="space-y-1 text-center">
@@ -172,15 +172,21 @@
                                             <p class="text-xs text-gray-500">{{ __('PDF up to 10MB') }}</p>
                                         </div>
                                     </div>
+                                    <div id="file-list" class="mt-4 space-y-2"></div>
                                     <div id="file-error" class="hidden mt-2 text-sm text-red-600"></div>
-                                    <div class="mt-5">
-                                        <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition duration-150 ease-in-out">
+                                    <div class="mt-5 flex justify-between">
+                                        <button type="submit" id="uploadButton" class="flex-grow mr-2 flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition duration-150 ease-in-out">
                                             {{ __('Upload Documents') }}
+                                        </button>
+                                        <button type="button" id="cancelButton" class="flex-grow ml-2 flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition duration-150 ease-in-out">
+                                            {{ __('Cancel') }}
                                         </button>
                                     </div>
                                 </form>
                             </div>
-                        @elseif($client->verification_status === 'Pending')
+
+
+        @elseif($client->verification_status === 'Pending')
                             <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-md">
                                 <div class="flex">
                                     <div class="flex-shrink-0">
@@ -285,5 +291,85 @@
         function closeReviewsModal() {
             document.getElementById('reviewsModal').classList.add('hidden');
         }
+
+        const fileInput = document.getElementById('file-upload');
+        const fileList = document.getElementById('file-list');
+        const errorDiv = document.getElementById('file-error');
+        const uploadForm = document.getElementById('uploadForm');
+        const uploadButton = document.getElementById('uploadButton');
+        const cancelButton = document.getElementById('cancelButton');
+
+        fileInput.addEventListener('change', updateFileList);
+
+        function updateFileList() {
+            fileList.innerHTML = '';
+            errorDiv.classList.add('hidden');
+
+            Array.from(fileInput.files).forEach((file, index) => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'flex justify-between items-center';
+                fileItem.innerHTML = `
+                    <span class="text-sm text-gray-600">${file.name}</span>
+                    <button type="button" class="text-red-500 hover:text-red-700" onclick="removeFile(${index})">
+                        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                `;
+                fileList.appendChild(fileItem);
+            });
+        }
+
+        function removeFile(index) {
+            const dt = new DataTransfer();
+            const { files } = fileInput;
+
+            for (let i = 0; i < files.length; i++) {
+                if (index !== i) dt.items.add(files[i]);
+            }
+
+            fileInput.files = dt.files;
+            updateFileList();
+        }
+
+        function validateFiles() {
+            const files = fileInput.files;
+            if (files.length === 0) {
+                showError('Please select at least one file to upload.');
+                return false;
+            }
+
+            const maxSize = 10 * 1024 * 1024; // 10MB
+            for (let i = 0; i < files.length; i++) {
+                if (files[i].size > maxSize) {
+                    showError(`File "${files[i].name}" exceeds the 10MB limit.`);
+                    return false;
+                }
+                if (!files[i].name.toLowerCase().endsWith('.pdf')) {
+                    showError(`File "${files[i].name}" is not a PDF.`);
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        function showError(message) {
+            errorDiv.textContent = message;
+            errorDiv.classList.remove('hidden');
+        }
+
+        uploadForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (validateFiles()) {
+                uploadForm.submit();
+            }
+        });
+
+        cancelButton.addEventListener('click', () => {
+            fileInput.value = '';
+            fileList.innerHTML = '';
+            errorDiv.classList.add('hidden');
+        });
     </script>
 </x-app-layout>

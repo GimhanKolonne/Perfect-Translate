@@ -1,106 +1,106 @@
 @extends('layouts.client-dashboard')
 
 @section('content')
-    <div class="container mx-auto px-6 py-8 bg-gray-50">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 bg-gray-50">
         <h1 class="text-4xl font-bold text-gray-900 mb-6">Project Progress</h1>
 
+        @if (session('success'))
+            <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4" role="alert">
+                <p class="font-bold">Success</p>
+                <p>{{ session('success') }}</p>
+            </div>
+        @endif
+
         @if($projects->isEmpty())
-            <div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded-lg shadow" role="alert">
-                <strong class="font-bold">No projects found!</strong>
-                <span class="block sm:inline">You currently have no in-progress projects.</span>
+            <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded-lg shadow" role="alert">
+                <p class="font-bold">No projects found</p>
+                <p>You currently have no in-progress projects.</p>
             </div>
         @else
-            <div class="overflow-x-auto bg-white shadow-lg rounded-lg">
-                <table class="min-w-full bg-white">
-                    <thead class="bg-gray-200">
+            <div class="overflow-x-auto bg-white shadow-xl rounded-lg">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
                     <tr>
-                        <th class="py-3 px-4 border-b text-left text-sm font-medium text-gray-600">Project Name</th>
-                        <th class="py-3 px-4 border-b text-left text-sm font-medium text-gray-600">Translator</th>
-                        <th class="py-3 px-4 border-b text-left text-sm font-medium text-gray-600">Phases</th>
-                        <th class="py-3 px-4 border-b text-left text-sm font-medium text-gray-600">Actions</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Project Name</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Translator</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phases</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                     </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="bg-white divide-y divide-gray-200">
                     @foreach ($projects as $project)
                         <tr class="hover:bg-gray-50 transition duration-150 ease-in-out">
-                            <td class="py-3 px-4 border-b text-sm text-gray-800">{{ $project->project_name }}</td>
-                            <td class="py-3 px-4 border-b text-sm text-gray-800">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                {{ $project->project_name }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                 @php
                                     $translator = $project->applications->where('status', 'Accepted')->first()->user ?? null;
                                 @endphp
                                 {{ $translator ? $translator->name : 'N/A' }}
                             </td>
-                            <td class="py-3 px-4 border-b text-sm text-gray-800">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                 @foreach ($project->sprints as $sprint)
                                     <div class="flex items-center justify-between mb-2">
-                                    <span>Phase {{ $sprint->sprint_number }}
-                                        @if($sprint->progress_document)
-                                            <span class="text-green-500 ml-2">✔️</span>
-                                        @else
-                                            <span class="text-red-500 ml-2">✖️</span>
-                                        @endif
-                                    </span>
-                                        <button onclick="toggleProgress({{ $sprint->id }})" class="text-blue-600 hover:underline">View Progress</button>
+                                        <span class="flex items-center">
+                                            @if($project->sprints->isEmpty())
+                                                <div>No phases available</div>
+                                            @endif
+                                            Phase {{ $sprint->sprint_number }}
+                                            @if($sprint->progress_document)
+                                                <svg class="ml-2 h-5 w-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                            @else
+                                                <svg class="ml-2 h-5 w-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                            @endif
+                                        </span>
+                                        <button onclick="toggleProgress({{ $sprint->id }})" class="text-blue-600 hover:text-blue-800 focus:outline-none focus:underline">
+                                            View Progress
+                                        </button>
                                     </div>
                                 @endforeach
                             </td>
-                            <td class="py-3 px-4 border-b text-sm text-gray-800">
-                                <a href="{{ route('chat.index', $project->id) }}" class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition duration-300 ease-in-out">Chat</a>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <a href="{{ route('chat.index', $project->id) }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                                    Chat
+                                </a>
+
+                                @if($project->sprints->isNotEmpty() && $project->sprints->every(fn($sprint) => $sprint->progress_document))
+                                    <form action="{{ route('client.projects.complete', $project->id) }}" method="POST" class="inline-block">
+                                        @csrf
+                                        @method('PATCH')
+
+                                        <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                            Mark as Completed
+                                        </button>
+                                    </form>
+                                @endif
+
                             </td>
                         </tr>
                         @foreach ($project->sprints as $sprint)
                             <tr id="progress-{{ $sprint->id }}" class="hidden bg-gray-50">
                                 <td colspan="4" class="px-6 py-4">
-                                    <div class="space-y-4">
-                                        <div class="bg-white p-4 rounded-md shadow-sm border border-gray-200">
-                                            <h2 class="text-2xl font-bold text-gray-900 mb-4">
-                                                Progress for {{ $project->project_name }} - Phase {{ $sprint->sprint_number }}
-                                            </h2>
+                                    <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+                                        <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                                            Progress for {{ $project->project_name }} - Phase {{ $sprint->sprint_number }}
+                                        </h2>
 
-                                            <div class="mb-4">
-                                                <strong class="text-gray-700">Description:</strong>
-                                                <p class="mt-1 text-gray-600">{{ $sprint->description ?: 'No description available.' }}</p>
-                                            </div>
-
-                                            @if ($sprint->progress_document)
-                                                <div class="mb-4">
-                                                    <strong class="text-gray-700">Progress Document:</strong>
-                                                    <a href="{{ asset('storage/' . $sprint->progress_document) }}" class="ml-2 text-blue-600 hover:underline">
-                                                        <i class="fas fa-file-download"></i> View Document
-                                                    </a>
-                                                </div>
-                                            @else
-                                                <p class="mb-4 text-yellow-600">No progress document available for this phase.</p>
-                                            @endif
-
-                                            <div class="mt-6">
-                                                <h3 class="text-xl font-semibold text-gray-900 mb-2">Feedback</h3>
-
-                                                @if (session('success'))
-                                                    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-2 rounded-md mb-4" role="alert">
-                                                        <strong class="font-bold">{{ session('success') }}</strong>
-                                                    </div>
-                                                @endif
-
-                                                <form id="feedbackForm-{{ $sprint->id }}" action="{{ route('client.sprints.feedback', $sprint->id) }}" method="POST" class="mt-4">
-                                                    @csrf
-                                                    <textarea name="feedback" rows="4" class="w-full px-3 py-2 text-gray-700 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter your feedback here...">{{ old('feedback', $sprint->feedback) }}</textarea>
-                                                    @error('feedback')
-                                                    <span class="text-red-500 text-sm">{{ $message }}</span>
-                                                    @enderror
-                                                    <button type="submit" class="mt-2 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition duration-300 ease-in-out">
-                                                        <i class="fas fa-paper-plane"></i> Submit Feedback
-                                                    </button>
-                                                </form>
-
-                                                <div class="mt-3 pt-3 border-t border-gray-200">
-                                                    <h5 class="text-sm font-medium text-gray-900">Previous Feedback:</h5>
-                                                    <p class="mt-1 text-sm text-gray-600">
-                                                        {{ !empty($sprint->feedback) ? $sprint->feedback : 'No feedback provided yet.' }}
-                                                    </p>
-                                                </div>
-                                            </div>
+                                        <div class="mb-4">
+                                            <h3 class="text-lg font-semibold text-gray-700 mb-2">Description:</h3>
+                                            <p class="text-gray-600">{{ $sprint->description ?: 'No description available.' }}</p>
                                         </div>
+
+                                        @if ($sprint->progress_document)
+                                            <div class="mb-4">
+                                                <h3 class="text-lg font-semibold text-gray-700 mb-2">Progress Document:</h3>
+                                                <a href="{{ asset('storage/' . $sprint->progress_document) }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                                    <svg class="mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                                                    View Document
+                                                </a>
+                                            </div>
+                                        @else
+                                            <p class="mb-4 text-yellow-600">No progress document available for this phase.</p>
+                                        @endif
                                     </div>
                                 </td>
                             </tr>
@@ -123,11 +123,13 @@
         }
 
         document.addEventListener('DOMContentLoaded', function() {
-            const successMessages = document.querySelectorAll('.bg-green-100');
+            const successMessages = document.querySelectorAll('[role="alert"]');
             successMessages.forEach(message => {
                 setTimeout(() => {
-                    message.style.display = 'none';
-                }, 5000); // Hides the message after 5 seconds
+                    message.style.transition = 'opacity 1s ease-out';
+                    message.style.opacity = 0;
+                    setTimeout(() => message.remove(), 1000);
+                }, 5000);
             });
         });
     </script>

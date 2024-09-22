@@ -22,9 +22,11 @@
                     <div class="border-t border-gray-200 p-4 bg-white">
                         <form id="chat-form" class="flex items-center space-x-3">
                             <input type="text" id="message-input" placeholder="Type your message..."
-                                   class="flex-grow border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                   class="flex-grow border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                   maxlength="500" required>
                             <button type="submit"
-                                    class="bg-purple-500 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                                    class="bg-purple-500 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    id="send-button" disabled>
                                 Send
                             </button>
                         </form>
@@ -41,12 +43,12 @@
                     <div class="p-4">
                         <form id="upload-form" enctype="multipart/form-data">
                             @csrf
-                            <input type="file" id="file-input" name="file" class="hidden" multiple>
-                            <span class="cursor-pointer bg-white text-black px-2 py-1 rounded-lg hover:bg-purple-200 transition duration-200 inline-block mb-4" onclick="document.getElementById('file-input').click();">
-                             <i class="fas fa-upload"></i> Choose Files
-                            </span>
-                            <button type="submit" class="bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition duration-200 ml-2">
-                                <i class="fas fa-cloud-upload-alt"></i> Upload
+                            <input type="file" id="file-input" name="file" class="hidden" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png,.gif,.txt,.zip,.rar">
+                            <label for="file-input" class="cursor-pointer bg-white text-black px-4 py-2 rounded-lg border border-purple-500 hover:bg-purple-100 transition duration-200 inline-block mb-4">
+                                <i class="fas fa-upload mr-2"></i> Choose Files
+                            </label>
+                            <button type="submit" id="upload-button" class="bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition duration-200 ml-2 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                                <i class="fas fa-cloud-upload-alt mr-2"></i> Upload
                             </button>
                         </form>
 
@@ -80,6 +82,12 @@
 
         const channel = pusher.subscribe('chat-channel');
         const messagesContainer = document.getElementById('messages');
+        const messageInput = document.getElementById('message-input');
+        const sendButton = document.getElementById('send-button');
+        const chatForm = document.getElementById('chat-form');
+        const uploadForm = document.getElementById('upload-form');
+        const fileInput = document.getElementById('file-input');
+        const uploadButton = document.getElementById('upload-button');
 
         // Listen for chat messages
         channel.bind('chat-event', function(data) {
@@ -91,13 +99,18 @@
             addFileToList(data.file);
         });
 
+        // Enable/disable send button based on input
+        messageInput.addEventListener('input', function() {
+            sendButton.disabled = !this.value.trim();
+        });
+
         // Handle chat form submission
-        document.getElementById('chat-form').addEventListener('submit', function(e) {
+        chatForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            const messageInput = document.getElementById('message-input');
             const message = messageInput.value.trim();
 
             if (message) {
+                sendButton.disabled = true;
                 fetch('{{ route('chat.send') }}', {
                     method: 'POST',
                     headers: {
@@ -105,9 +118,13 @@
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     },
                     body: JSON.stringify({ message: message, project_id: '{{ $projectId }}' })
+                }).then(() => {
+                    messageInput.value = '';
+                    sendButton.disabled = true;
+                }).catch(error => {
+                    console.error('Error sending message:', error);
+                    alert('Failed to send message. Please try again.');
                 });
-
-                messageInput.value = '';
             }
         });
 
@@ -120,12 +137,12 @@
             messageElement.className = `flex ${isCurrentUser ? 'justify-end' : 'justify-start'} mb-4`;
 
             messageElement.innerHTML = `
-    <div class="max-w-xs lg:max-w-md ${isCurrentUser ? 'bg-purple-200 text-black' : 'bg-gray-100 text-gray-800'} rounded-lg px-4 py-2 shadow">
-        <p class="font-semibold text-sm mb-1">${msg.user_name}</p>
-        <p class="text-sm">${msg.message}</p>
-        ${msg.file ? `<a href="${msg.file.url}" target="_blank" class="text-blue-600 hover:underline text-sm">📎 ${msg.file.filename}</a>` : ''}
-    </div>
-    `;
+            <div class="max-w-xs lg:max-w-md ${isCurrentUser ? 'bg-purple-200 text-black' : 'bg-gray-100 text-gray-800'} rounded-lg px-4 py-2 shadow">
+                <p class="font-semibold text-sm mb-1">${msg.user_name}</p>
+                <p class="text-sm">${escapeHtml(msg.message)}</p>
+                ${msg.file ? `<a href="${msg.file.url}" target="_blank" class="text-blue-600 hover:underline text-sm">📎 ${escapeHtml(msg.file.filename)}</a>` : ''}
+            </div>
+        `;
             messagesContainer.appendChild(messageElement);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
@@ -137,19 +154,24 @@
                 messages.forEach(appendMessage);
             });
 
-        // Handle file upload
-        const uploadForm = document.getElementById('upload-form');
-        const fileInput = document.getElementById('file-input');
+        // Enable/disable upload button based on file selection
+        fileInput.addEventListener('change', function() {
+            uploadButton.disabled = this.files.length === 0;
+        });
 
+        // Handle file upload
         uploadForm.addEventListener('submit', function(e) {
             e.preventDefault();
             const formData = new FormData();
             const files = fileInput.files;
 
+            if (files.length === 0) return;
+
             for (let i = 0; i < files.length; i++) {
                 formData.append('file', files[i]);
             }
 
+            uploadButton.disabled = true;
             fetch('{{ route('chat.upload', ['projectId' => $projectId]) }}', {
                 method: 'POST',
                 headers: {
@@ -159,11 +181,17 @@
             })
                 .then(response => response.json())
                 .then(data => {
-                    // add the file to the list immediately
                     addFileToList(data);
                     fileInput.value = '';
+                    uploadButton.disabled = true;
                 })
-                .catch(error => console.error('Error:', error));
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Failed to upload file. Please try again.');
+                })
+                .finally(() => {
+                    uploadButton.disabled = false;
+                });
         });
 
         // Function to add file to the list
@@ -185,7 +213,7 @@
             if (file.user_id === {{ auth()->user()->id }}) {
                 deleteBtn.addEventListener('click', () => deleteFile(file.id));
             } else {
-                deleteBtn.remove(); // Remove the delete button if the current user is not the uploader
+                deleteBtn.remove();
             }
 
             document.getElementById('file-list').prepend(container);
@@ -245,5 +273,16 @@
             .then(files => {
                 files.forEach(addFileToList);
             });
+
+        // Helper function to escape HTML
+        function escapeHtml(unsafe) {
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
     </script>
+\
 @endsection
